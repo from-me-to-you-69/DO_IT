@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE Comprehensive Exam Reviewer - Mathematics & Engineering Sciences</title>
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --correct: #10b981;
+            --correct-bg: #ecfdf5;
+            --correct-border: #059669;
+            --wrong: #f43f5e;
+            --wrong-bg: #fff1f2;
+            --wrong-border: #e11d48;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px 16px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .progress-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .quiz-card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text-main);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .btn-hint {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .btn-hint:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .hint-box {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: #92400e;
+            display: none;
+            word-wrap: break-word;
+            overflow-x: auto;
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .choice-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 1rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .choice-btn.selected-correct {
+            background: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #065f46 !important;
+            font-weight: 600;
+        }
+
+        .choice-btn.selected-wrong {
+            background: var(--wrong-bg) !important;
+            border-color: var(--wrong-border) !important;
+            color: #9f1239 !important;
+            font-weight: 600;
+        }
+
+        .choice-btn.reveal-correct {
+            background: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #065f46 !important;
+        }
+
+        .choice-btn:disabled {
+            cursor: default;
+        }
+
+        .explanation-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 10px;
+            margin-bottom: 16px;
+            display: none;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .explanation-box.correct-mode {
+            border-color: #a7f3d0;
+            background: #f0fdf4;
+        }
+        .explanation-box.correct-mode .explanation-title {
+            color: #047857;
+        }
+
+        .explanation-box.wrong-mode {
+            border-color: #fecdd3;
+            background: #fff1f2;
+        }
+        .explanation-box.wrong-mode .explanation-title {
+            color: #be123c;
+        }
+
+        .explanation-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+        mjx-container, .MathJax {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+            display: inline-block;
+            padding: 2px 0;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: auto;
+        }
+
+        .btn-nav {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex: 1;
+            max-width: 160px;
+            text-align: center;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-nav:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .results-card {
+            background: var(--card-bg);
+            padding: 40px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+            display: none;
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            border: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 24px auto;
+        }
+
+        .score-num {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .score-pct {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .results-msg {
+            font-size: 1.1rem;
+            margin-bottom: 28px;
+            color: #475569;
+        }
+
+        .btn-restart {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-restart:hover {
+            background: var(--primary-hover);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .question-header {
+                flex-direction: column;
+            }
+            .btn-hint {
+                align-self: flex-start;
+            }
+            .quiz-card {
+                padding: 18px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="quiz-title">ECE Engineering Mathematics Reviewer</div>
+        <div class="progress-badge" id="progress-indicator">Item 1 of 100</div>
+    </header>
+
+    <div class="stats-bar" id="stats-bar">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-score">0</div>
+            <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: var(--correct);" id="stat-correct">0</div>
+            <div class="stat-label">Correct</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: var(--wrong);" id="stat-incorrect">0</div>
+            <div class="stat-label">Incorrect</div>
+        </div>
+    </div>
+
+    <div class="quiz-card" id="quiz-card">
+        <div class="question-header">
+            <div class="question-text" id="question-text">Loading question...</div>
+            <button class="btn-hint" id="btn-hint" onclick="toggleHint()">Show Hint</button>
+        </div>
+
+        <div class="hint-box" id="hint-box"></div>
+
+        <div class="choices-container" id="choices-container"></div>
+
+        <div class="explanation-box" id="explanation-box">
+            <div class="explanation-title" id="explanation-title">Explanation</div>
+            <div class="explanation-body" id="explanation-body"></div>
+        </div>
+
+        <div class="nav-controls">
+            <button class="btn-nav" id="btn-prev" onclick="prevQuestion()">Previous</button>
+            <button class="btn-nav" id="btn-next" onclick="nextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <div class="results-card" id="results-card">
+        <div class="results-title">Quiz Completed!</div>
+        <div class="score-circle">
+            <div class="score-num" id="final-score">0/100</div>
+            <div class="score-pct" id="final-pct">0%</div>
+        </div>
+        <div class="results-msg" id="final-msg">Great effort! Keep practicing to master ECE topics.</div>
+        <button class="btn-restart" onclick="restartQuiz()">Restart Reviewer</button>
+    </div>
+
+    <footer>Created by K.</footer>
+</div>
+
+<script>
+const rawQuestionsData = [
+  {
+    q: "Which pair of integrals is most likely solved using the same integration technique?",
+    choices: [
+      "$\\int x e^{x} dx$ and $\\int x \\sin x dx$",
+      "$\\int e^{x} dx$ and $\\int \\sqrt{9-x^{2}} dx$",
+      "$\\int \\frac{1}{x} dx$ and $\\int \\sin^{2}x dx$",
+      "$\\int x^{2} dx$ and $\\int \\frac{1}{x+1} dx$"
+    ],
+    correctText: "$\\int x e^{x} dx$ and $\\int x \\sin x dx$",
+    hint: "Look for expressions involving the product of an algebraic term $x$ and a transcendental function ($e^x$ or $\\sin x$).",
+    explanation: "<strong>Concept:</strong> Both $\\int x e^{x} dx$ and $\\int x \\sin x dx$ are products of an algebraic function and a transcendental function, requiring <strong>Integration by Parts</strong> ($\\int u dv = uv - \\int v du$) guided by the LIATE rule."
+  },
+  {
+    q: "A sample has a mean of 50 and a standard error of 2. Another sample has the same mean but a standard error of 5. Which estimate is more reliable?",
+    choices: [
+      "The estimate with standard error 2",
+      "The estimate with standard error 5",
+      "Both have equal reliability",
+      "Neither can be compared"
+    ],
+    correctText: "The estimate with standard error 2",
+    hint: "Standard error measures the variability or precision of a sample estimate relative to the population mean.",
+    explanation: "<strong>Concept:</strong> Standard error ($SE = \\frac{\\sigma}{\\sqrt{n}}$) quantifies sample estimate variability. A smaller standard error indicates higher precision and greater reliability of the estimated mean."
+  },
+  {
+    q: "The probability of failing to reject the null hypothesis when it is false is called:",
+    choices: [
+      "Type II error",
+      "Type I error",
+      "Test power",
+      "Error margin"
+    ],
+    correctText: "Type II error",
+    hint: "Type I error is rejecting $H_0$ when true ($\\alpha$). What is failing to reject $H_0$ when false ($\\beta$)?",
+    explanation: "<strong>Concept:</strong> In hypothesis testing, a <strong>Type II error</strong> (denoted as $\\beta$) occurs when the null hypothesis $H_0$ is false, but the test fails to reject it. Power is $1 - \\beta$."
+  },
+  {
+    q: "A vector field has both zero divergence and zero curl in a simply connected region. Which conclusion is most appropriate?",
+    choices: [
+      "The field is both solenoidal and irrotational.",
+      "The field must have nonzero circulation.",
+      "The field must have a nonzero source.",
+      "The field cannot be represented using a potential"
+    ],
+    correctText: "The field is both solenoidal and irrotational.",
+    hint: "Zero divergence ($\n\\nabla \\cdot \\mathbf{F} = 0$) defines solenoidal fields, while zero curl ($\n\\nabla \\times \\mathbf{F} = 0$) defines irrotational fields.",
+    explanation: "<strong>Concept:</strong> $\\nabla \\cdot \\mathbf{F} = 0$ implies a <em>solenoidal</em> field (no flux sources/sinks). $\\nabla \\times \\mathbf{F} = 0$ implies an <em>irrotational</em> field (conservative, zero circulation)."
+  },
+  {
+    q: "The convolution property of the Z-transform states that convolution in the time domain corresponds to:",
+    choices: [
+      "Multiplication in the z-domain",
+      "Differentiation in the z-domain",
+      "Integration in the z-domain",
+      "Addition in the z-domain"
+    ],
+    correctText: "Multiplication in the z-domain",
+    hint: "How does time-domain discrete convolution $x[n] * h[n]$ transform into $X(z)$ and $H(z)$?",
+    explanation: "<strong>Property:</strong> $\\mathcal{Z}\\{x[n] * h[n]\\} = X(z) \\cdot H(z)$. Discrete convolution in time becomes algebraic multiplication in the Z-domain."
+  },
+  {
+    q: "What is the area of the region bounded by the curves $x=y^{2}-2$ and $x=y$?",
+    choices: [
+      "9/2",
+      "7/2",
+      "8/3",
+      "13/6"
+    ],
+    correctText: "9/2",
+    hint: "Find intersection points by setting $y^2 - 2 = y \\implies y^2 - y - 2 = 0$. Integrate $\\int_{y_1}^{y_2} (x_{right} - x_{left}) dy$.",
+    explanation: "<strong>Calculation:</strong><br>1. Intersections: $y^2 - y - 2 = 0 \\implies (y-2)(y+1)=0 \\implies y = -1, 2$.<br>2. Area = $\\int_{-1}^{2} (y - (y^2 - 2)) dy = \\int_{-1}^{2} (y - y^2 + 2) dy$.<br>3. $[\\frac{y^2}{2} - \\frac{y^3}{3} + 2y]_{-1}^{2} = (2 - \\frac{8}{3} + 4) - (\\frac{1}{2} + \\frac{1}{3} - 2) = \\frac{10}{3} - (-\\frac{7}{6}) = \\frac{20+7}{6} = \\frac{27}{6} = \\frac{9}{2}$."
+  },
+  {
+    q: "Why is random sampling important in hypothesis testing?",
+    choices: [
+      "It helps ensure that the sample represents the population fairly.",
+      "It helps remove or minimize the need for forming hypotheses errors.",
+      "It helps make every sample exactly the same.",
+      "It helps reduce the chance of unavoidable errors."
+    ],
+    correctText: "It helps ensure that the sample represents the population fairly.",
+    hint: "Random selection provides every individual equal opportunity to be chosen, eliminating selection bias.",
+    explanation: "<strong>Concept:</strong> Random sampling ensures unbiased estimation, giving every population element an equal probability of selection so that sample statistics infer population parameters accurately."
+  },
+  {
+    q: "LIATE is a mnemonic used to help choose which function should be assigned as $u$ when applying integration by parts. What does the letter L in LIATE represent?",
+    choices: [
+      "Logarithmic functions",
+      "Limits",
+      "Length",
+      "Linear functions"
+    ],
+    correctText: "Logarithmic functions",
+    hint: "LIATE order: L - Logarithmic, I - Inverse Trig, A - Algebraic, T - Trigonometric, E - Exponential.",
+    explanation: "<strong>Mnemonic:</strong> In <strong>LIATE</strong>, $L$ stands for <strong>Logarithmic functions</strong> (e.g., $\\ln x$), which take highest priority for $u$ assignment in $\\int u dv$."
+  },
+  {
+    q: "What is the main purpose of regression analysis?",
+    choices: [
+      "To predict the value of one variable based on another variable.",
+      "To organize the given data into separate categories only.",
+      "To eliminate the presence of all possible errors in data.",
+      "To calculate the probability of certain outcomes only."
+    ],
+    correctText: "To predict the value of one variable based on another variable.",
+    hint: "Regression establishes a mathematical functional relationship $y = f(x)$ between dependent and independent variables.",
+    explanation: "<strong>Concept:</strong> Regression modeling estimates relationships between a dependent response variable and one or more independent predictor variables for modeling and prediction."
+  },
+  {
+    q: "A Fourier series coefficient $a_n$ becomes zero for all cosine terms. What does this suggest?",
+    choices: [
+      "The function may be odd.",
+      "The function has no sine terms.",
+      "The function is always constant.",
+      "The function is non-periodic."
+    ],
+    correctText: "The function may be odd.",
+    hint: "Odd functions satisfy $f(-x) = -f(x)$ and contain only sine terms ($b_n$) in Fourier expansion.",
+    explanation: "<strong>Concept:</strong> An odd periodic function $f(-x) = -f(x)$ has symmetry such that $a_0 = 0$ and $a_n = 0$ for all $n$, resulting in a pure sine Fourier series."
+  },
+  {
+    q: "Stokes' Theorem converts a line integral into an integral involving:",
+    choices: [
+      "Curl",
+      "Laplacian",
+      "Divergence",
+      "Gradient"
+    ],
+    correctText: "Curl",
+    hint: "Stokes' Theorem formula: $\\oint_C \\mathbf{F} \\cdot d\\mathbf{r} = \\iint_S (\\nabla \\times \\mathbf{F}) \\cdot d\\mathbf{S}$.",
+    explanation: "<strong>Theorem:</strong> Stokes' Theorem equates the circulation line integral of a vector field around a closed boundary curve $C$ to the surface integral of its <strong>curl</strong> $(\\nabla \\times \\mathbf{F})$ over surface $S$."
+  },
+  {
+    q: "If the characteristic equation has complex roots, the complementary solution contains:",
+    choices: [
+      "Exponential, sine, and cosine functions.",
+      "Logarithmic functions only.",
+      "Polynomial functions only.",
+      "Rational functions and polynomial functions"
+    ],
+    correctText: "Exponential, sine, and cosine functions.",
+    hint: "Complex conjugate roots $\\alpha \\pm i\\beta$ yield Euler terms $e^{(\\alpha \\pm i\\beta)x} = e^{\\alpha x}(\\cos \\beta x + i \\sin \\beta x)$.",
+    explanation: "<strong>Concept:</strong> Roots $r = \\alpha \\pm i\\beta$ give complementary solution $y_c = e^{\\alpha x}(C_1 \\cos \\beta x + C_2 \\sin \\beta x)$, combining exponential decay/growth with harmonic oscillations."
+  },
+  {
+    q: "If the convolution of an input $x[n]$ with an impulse response $h[n]$ produces zero for every possible input, what can be concluded?",
+    choices: [
+      "The system output is always zero.",
+      "The system is always causal.",
+      "The system is always stable.",
+      "The input is always periodic."
+    ],
+    correctText: "The system output is always zero.",
+    hint: "Since $y[n] = x[n] * h[n]$, if output is zero for all $x[n]$, the system impulse response must be $h[n] = 0$.",
+    explanation: "<strong>Concept:</strong> If $y[n] = x[n] * h[n] = 0$ for all arbitrary input sequences $x[n]$, then $h[n] = 0$ everywhere, implying the system output is identically zero."
+  },
+  {
+    q: "Find the general solution to the homogeneous differential equation $\\frac{dy}{dx}=\\frac{y-x}{y+x}$.",
+    choices: [
+      "$\\frac{1}{2}\\ln(x^{2}+y^{2})+\\tan^{-1}(y/x)=C$",
+      "$x^{2}+y^{2}+2xy=C$",
+      "$\\ln(x^{2}+y^{2})+2\\tan^{-1}(y/x)=C$",
+      "$\\ln(x^{2}+y^{2})-2\\tan^{-1}(x/y)=C$"
+    ],
+    correctText: "$\\frac{1}{2}\\ln(x^{2}+y^{2})+\\tan^{-1}(y/x)=C$",
+    hint: "Substitute $y = v x$, $dy/dx = v + x \\frac{dv}{dx}$. Rearrange into separable form $\\frac{v+1}{v^2+1} dv = -\\frac{dx}{x}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $v + x v' = \\frac{vx-x}{vx+x} = \\frac{v-1}{v+1} \\implies x v' = \\frac{v-1 - v(v+1)}{v+1} = \\frac{-(v^2+1)}{v+1}$.<br>2. Separate: $\\frac{v+1}{v^2+1} dv = -\\frac{dx}{x} \\implies \\frac{1}{2}\\ln(v^2+1) + \\tan^{-1}(v) = -\\ln x + C$.<br>3. $\\frac{1}{2}\\ln(v^2+1) + \\ln x + \\tan^{-1}(v) = C \\implies \\frac{1}{2}\\ln(x^2(v^2+1)) + \\tan^{-1}(v) = C$.<br>4. Substitute $v = y/x$: $\\frac{1}{2}\\ln(x^2+y^2) + \\tan^{-1}(y/x) = C$."
+  },
+  {
+    q: "In solving differential equations using Laplace transforms, initial conditions are incorporated through:",
+    choices: [
+      "The derivative transform formulas",
+      "The inverse transform only",
+      "Partial fractions only",
+      "The convolution theorem only"
+    ],
+    correctText: "The derivative transform formulas",
+    hint: "Recall $\\mathcal{L}\\{y'\\} = sY(s) - y(0)$ and $\\mathcal{L}\\{y''\\} = s^2 Y(s) - s y(0) - y'(0)$.",
+    explanation: "<strong>Concept:</strong> Laplace differentiation properties directly insert initial conditions (e.g., $y(0), y'(0)$) into algebraic domain equations, solving initial value problems directly."
+  },
+  {
+    q: "According to the Fundamental Theorem of Calculus, if $F(x)$ is an antiderivative of $f(x)$, how is the definite integral evaluated over the interval $[a, b]$?",
+    choices: [
+      "$\\int_{a}^{b} f(x) dx = F(b) - F(a)$",
+      "$\\int_{a}^{b} f(x) dx = F(a) - F(b)$",
+      "$\\int_{a}^{b} f(x) dx = F'(b) - F'(a)$",
+      "$\\int_{a}^{b} f(x) dx = F(b) \\cdot F(a)$"
+    ],
+    correctText: "$\\int_{a}^{b} f(x) dx = F(b) - F(a)$",
+    hint: "Part 2 of FTC states that net area under continuous curve $f(x)$ equals antiderivative evaluated at upper bound minus lower bound.",
+    explanation: "<strong>Theorem:</strong> The Fundamental Theorem of Calculus Part 2 establishes $\\int_{a}^{b} f(x) dx = F(b) - F(a)$, where $F'(x) = f(x)$."
+  },
+  {
+    q: "Consider $G(s)=\\frac{s+2}{s^{2}+5s+6}$. Factoring the denominator gives: $s^{2}+5s+6=(s+2)(s+3)$. What is the pole-zero relationship?",
+    choices: [
+      "The zero at $s=-2$ cancels a pole at $s=-2$",
+      "There is no cancellation.",
+      "The pole at $s=-3$ cancels the zero at $s=-2$.",
+      "The zero at $s=2$ cancels a pole at $s=3$."
+    ],
+    correctText: "The zero at $s=-2$ cancels a pole at $s=-2$",
+    hint: "Numerator root gives zero at $s=-2$. Denominator roots give poles at $s=-2$ and $s=-3$.",
+    explanation: "<strong>Concept:</strong> $G(s) = \\frac{s+2}{(s+2)(s+3)}$. A zero at $s=-2$ in the numerator cancels the pole factor $(s+2)$ in the denominator, reducing $G(s) = \\frac{1}{s+3}$."
+  },
+  {
+    q: "A manufacturing plant runs a $2^{3}$ full factorial design with 3 replicates per run to optimize a chemical process. Calculate the total number of experimental trials that must be executed in this setup.",
+    choices: [
+      "24",
+      "48",
+      "12",
+      "8"
+    ],
+    correctText: "24",
+    hint: "Total trials = $2^k \\times n$, where $k$ is number of factors (3) and $n$ is replicates per run (3).",
+    explanation: "<strong>Calculation:</strong><br>1. Treatment combinations = $2^3 = 8$ runs.<br>2. Total trials = $8 \\text{ runs} \\times 3 \\text{ replicates} = 24$ trials."
+  },
+  {
+    q: "The parametric equations $x=4\\cot t$, $y=2\\sin t$ represent:",
+    choices: [
+      "A hyperbola",
+      "An ellipse",
+      "A parabola",
+      "A circle"
+    ],
+    correctText: "A hyperbola",
+    hint: "Use trig identity $\\cot^2 t + 1 = \\csc^2 t = \\frac{1}{\\sin^2 t}$. Express in terms of $x$ and $y$.",
+    explanation: "<strong>Derivation:</strong><br>1. $\\cot t = \\frac{x}{4} \\implies \\cot^2 t = \\frac{x^2}{16}$.<br>2. $\\sin t = \\frac{y}{2} \\implies \\csc^2 t = \\frac{4}{y^2}$.<br>3. Since $\\csc^2 t - \\cot^2 t = 1 \\implies \\frac{4}{y^2} - \\frac{x^2}{16} = 1$, which is the standard equation of a <strong>hyperbola</strong>."
+  },
+  {
+    q: "An AC circuit has an alternating voltage source of $V=100\\angle 0^{\\circ}$ Volts. It is connected to a total circuit impedance of $Z=3+4i\\ \\Omega$. Compute the complex current phasor $I$ passing through the circuit ($I=V/Z$).",
+    choices: [
+      "$20\\angle -53.13^{\\circ}$ Amperes",
+      "$20\\angle 53.13^{\\circ}$ Amperes",
+      "$12+16i$ Amperes",
+      "$12-16i$ Amperes"
+    ],
+    correctText: "$20\\angle -53.13^{\\circ}$ Amperes",
+    hint: "Convert $Z = 3+4i$ to polar form: $|Z| = \\sqrt{3^2+4^2}=5$, $\\theta = \\tan^{-1}(4/3) = 53.13^\circ$.",
+    explanation: "<strong>Calculation:</strong><br>1. $Z = 5\\angle 53.13^{\\circ}\\ \\Omega$.<br>2. $I = \\frac{100\\angle 0^{\\circ}}{5\\angle 53.13^{\\circ}} = 20\\angle (0^{\\circ} - 53.13^{\\circ}) = 20\\angle -53.13^{\\circ}\\ \\text{A}$."
+  },
+  {
+    q: "A region bounded by the curve $y=x^{2}$ and the line $y=2x$ is rotated around the y-axis. Which calculation correctly determines the volume using the Cylindrical Shells Method?",
+    choices: [
+      "$8\\pi/3$",
+      "$4\\pi/3$",
+      "$\\pi/6$",
+      "$4\\pi/15$"
+    ],
+    correctText: "$8\\pi/3$",
+    hint: "Cylindrical shells formula about y-axis: $V = 2\\pi \\int_a^b x (y_{upper} - y_{lower}) dx$. Intersections at $x=0, 2$.",
+    explanation: "<strong>Calculation:</strong><br>1. Radius = $x$, height = $2x - x^2$, bounds $x \\in [0, 2]$.<br>2. $V = 2\\pi \\int_{0}^{2} x(2x - x^2) dx = 2\\pi \\int_{0}^{2} (2x^2 - x^3) dx$.<br>3. $V = 2\\pi [\\frac{2x^3}{3} - \\frac{x^4}{4}]_{0}^{2} = 2\\pi [\\frac{16}{3} - 4] = 2\\pi [\\frac{4}{3}] = \\frac{8\\pi}{3}$."
+  },
+  {
+    q: "Simpson's 1/3 Rule requires the number of subintervals to be:",
+    choices: [
+      "Even",
+      "Zero",
+      "Any number",
+      "Odd"
+    ],
+    correctText: "Even",
+    hint: "Simpson's 1/3 rule fits parabolic segments across pairs of subintervals.",
+    explanation: "<strong>Concept:</strong> Simpson's 1/3 rule approximates area using quadratic polynomials over consecutive subinterval pairs. Hence, the total subintervals $n$ must be an <strong>even number</strong>."
+  },
+  {
+    q: "The integral $\\int \\frac{x^{2}+1}{x-1}dx$ should first be solved by:",
+    choices: [
+      "Polynomial division",
+      "Integration by parts",
+      "Completing the square",
+      "Trigonometric substitution"
+    ],
+    correctText: "Polynomial division",
+    hint: "Compare degrees of numerator and denominator. Numerator degree (2) $\\ge$ denominator degree (1).",
+    explanation: "<strong>Concept:</strong> An improper rational fraction (degree of numerator $\\ge$ denominator) must be simplified via <strong>polynomial long division</strong> first: $\\frac{x^2+1}{x-1} = x + 1 + \\frac{2}{x-1}$."
+  },
+  {
+    q: "If two parametric equations describe a circle, what does increasing the parameter typically indicate?",
+    choices: [
+      "The point moves along the circle.",
+      "The circle changes into an ellipse.",
+      "The center shifts to another location.",
+      "The radius becomes larger."
+    ],
+    correctText: "The point moves along the circle.",
+    hint: "For $x = r \\cos t$ and $y = r \\sin t$, $t$ represents time or angle.",
+    explanation: "<strong>Concept:</strong> In parametric representation $(x(t), y(t))$, increasing parameter $t$ traces motion along the curve contour without altering the static geometry radius or center."
+  },
+  {
+    q: "In Gaussian elimination, a zero row in the augmented matrix indicates:",
+    choices: [
+      "Possible infinite solutions or dependent equations.",
+      "Reduced rank that prevents a unique solution.",
+      "No variables exist.",
+      "The system is nonlinear and always has a unique solution."
+    ],
+    correctText: "Possible infinite solutions or dependent equations.",
+    hint: "A row of all zeros $[0\\ 0\\ \\dots\\ 0\\ |\\ 0]$ means $0 = 0$, reflecting linear dependency.",
+    explanation: "<strong>Concept:</strong> A completely zero row in row-echelon form indicates a redundant linearly dependent equation, leaving fewer independent equations than variables (leading to infinite solutions if consistent)."
+  },
+  {
+    q: "A Fourier series coefficient $b_n$ represents the contribution of:",
+    choices: [
+      "Sine harmonics.",
+      "DC component only.",
+      "Cosine harmonics.",
+      "Exponential decay."
+    ],
+    correctText: "Sine harmonics.",
+    hint: "Fourier series expansion: $f(x) = a_0/2 + \\sum (a_n \\cos n x + b_n \\sin n x)$.",
+    explanation: "<strong>Concept:</strong> In trigonometric Fourier series, coefficients $a_n$ weight the cosine terms (even components) and $b_n$ weight the <strong>sine terms</strong> (odd components)."
+  },
+  {
+    q: "Evaluate the double integral $\\iint_{R}(6x^{2}+2y)dA$, where $R$ is the rectangular region defined by $0\\le x\\le2$ and $1\\le y\\le3$.",
+    choices: [
+      "48",
+      "40",
+      "28",
+      "56"
+    ],
+    correctText: "48",
+    hint: "Set up iterated integral: $\\int_{1}^{3} \\int_{0}^{2} (6x^2 + 2y) dx dy$.",
+    explanation: "<strong>Calculation:</strong><br>1. Inner integral: $\\int_{0}^{2} (6x^2 + 2y) dx = [2x^3 + 2xy]_{0}^{2} = 16 + 4y$.<br>2. Outer integral: $\\int_{1}^{3} (16 + 4y) dy = [16y + 2y^2]_{1}^{3} = (48 + 18) - (16 + 2) = 66 - 18 = 48$."
+  },
+  {
+    q: "A system is governed by $y''+9y=0$ with initial conditions $y(0)=0$ and $y'(0)=6$. What is the expression for $Y(s)$ in the Laplace domain before taking the inverse?",
+    choices: [
+      "$Y(s)=\\frac{6}{s^{2}+9}$",
+      "$Y(s)=\\frac{2}{s^{2}+9}$",
+      "$Y(s)=\\frac{6}{s^{2}-9}$",
+      "$Y(s)=\\frac{6s}{s^{2}+9}$"
+    ],
+    correctText: "$Y(s)=\\frac{6}{s^{2}+9}$",
+    hint: "Apply Laplace transform: $\\mathcal{L}\\{y''\\} = s^2 Y(s) - s y(0) - y'(0)$.",
+    explanation: "<strong>Calculation:</strong><br>1. $(s^2 Y(s) - s(0) - 6) + 9Y(s) = 0$.<br>2. $(s^2 + 9)Y(s) = 6 \\implies Y(s) = \\frac{6}{s^2 + 9}$."
+  },
+  {
+    q: "The divergence of a vector field produces a:",
+    choices: [
+      "Scalar field",
+      "Matrix",
+      "Vector field",
+      "Unit vector"
+    ],
+    correctText: "Scalar field",
+    hint: "Divergence operator: $\\nabla \\cdot \\mathbf{F} = \\frac{\\partial F_x}{\\partial x} + \\frac{\\partial F_y}{\\partial y} + \\frac{\\partial F_z}{\\partial z}$.",
+    explanation: "<strong>Concept:</strong> The dot product operation between vector operator $\\nabla$ and vector field $\\mathbf{F}$ yields a scalar field measuring local net flux density."
+  },
+  {
+    q: "A system has poles at $s=-1\\pm j10$. Another system has poles at $s=-5\\pm j10$. Which system will generally have oscillations that persist longer?",
+    choices: [
+      "The system with poles at $-1\\pm j10$",
+      "Neither system will oscillate",
+      "The system with poles at $-5\\pm j10$",
+      "Both will persist equally"
+    ],
+    correctText: "The system with poles at $-1\\pm j10$",
+    hint: "Transient decay rate is determined by real part $\\sigma$: $e^{\\sigma t}$. Smaller $|\n\\sigma|$ decays slower.",
+    explanation: "<strong>Concept:</strong> Transient decay factor is $e^{\\sigma t}$. For $s = -1 \\pm j10$, $\\sigma = -1$, yielding time constant $\\tau = 1\\text{s}$. For $s = -5 \\pm j10$, $\\sigma = -5$, giving $\\tau = 0.2\\text{s}$. The system closer to the imaginary axis ($-1$) persists longer."
+  },
+  {
+    q: "A vibrating string is modeled using $\\frac{\\partial^{2}u}{\\partial t^{2}}=c^{2}\\frac{\\partial^{2}u}{\\partial x^{2}}$. This equation is known as:",
+    choices: [
+      "Wave equation",
+      "Laplace equation",
+      "Logistic equation",
+      "Heat equation"
+    ],
+    correctText: "Wave equation",
+    hint: "Second-order partial derivatives in both time and space represent wave propagation.",
+    explanation: "<strong>Classification:</strong> $\\frac{\\partial^2 u}{\\partial t^2} = c^2 \\frac{\\partial^2 u}{\\partial x^2}$ is the standard 1D hyperbolic <strong>Wave Equation</strong>."
+  },
+  {
+    q: "Consider a moving object whose position is given by $s(t)$. If velocity $s'(t)$ is negative, but acceleration $s''(t)$ is positive, what is happening to the object?",
+    choices: [
+      "It is moving backward and slowing down.",
+      "It is moving forward and speeding up.",
+      "It is moving backward and speeding up.",
+      "It is moving forward and slowing down."
+    ],
+    correctText: "It is moving backward and slowing down.",
+    hint: "Negative velocity means backward motion. Opposite signs of $v(t)$ and $a(t)$ mean slowing down.",
+    explanation: "<strong>Concept:</strong> $v(t) < 0$ indicates motion in the negative (backward) direction. Since $a(t) > 0$ has opposite sign to $v(t)$, speed $|v(t)|$ is decreasing (slowing down)."
+  },
+  {
+    q: "Which improper integral converges?",
+    choices: [
+      "$\\int_{1}^{\\infty}\\frac{1}{x^{2}}dx$",
+      "$\\int_{1}^{\\infty}\\frac{1}{x}dx$",
+      "$\\int_{0}^{1}\\frac{1}{x}dx$",
+      "$\\int_{1}^{\\infty}\\frac{1}{\\sqrt{x}}dx$"
+    ],
+    correctText: "$\\int_{1}^{\\infty}\\frac{1}{x^{2}}dx$",
+    hint: "p-integral test: $\\int_{1}^{\\infty} \\frac{1}{x^p} dx$ converges if and only if $p > 1$.",
+    explanation: "<strong>Rule:</strong> By p-test, $\\int_{1}^{\\infty} \\frac{1}{x^p} dx$ converges for $p = 2 > 1$: $[-\\frac{1}{x}]_{1}^{\\infty} = 0 - (-1) = 1$."
+  },
+  {
+    q: "What do the terms $\\pi[R(x)]^{2}$ and $\\pi[r(x)]^{2}$ individually represent before subtraction in the Washer Method?",
+    choices: [
+      "The cross-sectional areas of a solid disk and a hollow core at a specific slice x.",
+      "The surface areas of the outer skin and inner tube of the solid.",
+      "The volumes of two separate cylinders, the larger one with radius R and the smaller one with radius r.",
+      "The circumferences of the outer and inner borders of the solid."
+    ],
+    correctText: "The cross-sectional areas of a solid disk and a hollow core at a specific slice x.",
+    hint: "Washer area formula: $A(x) = \\pi R(x)^2 - \\pi r(x)^2$. Each term is $\\pi r^2$ for circular cross-sections.",
+    explanation: "<strong>Concept:</strong> $\\pi [R(x)]^2$ is the total cross-sectional area of the outer disk, and $\\pi [r(x)]^2$ is the area of the inner hole removed at coordinate $x$."
+  },
+  {
+    q: "What type of discontinuity occurs when the left-hand and right-hand limits exist but are not equal?",
+    choices: [
+      "Jump discontinuity",
+      "Essential discontinuity",
+      "Infinite discontinuity",
+      "Removable discontinuity"
+    ],
+    correctText: "Jump discontinuity",
+    hint: "When $\\lim_{x \\to c^-} f(x) = L_1$ and $\\lim_{x \\to c^+} f(x) = L_2$ with $L_1 \\neq L_2$.",
+    explanation: "<strong>Definition:</strong> A <strong>jump discontinuity</strong> occurs when both one-sided limits exist as finite values, but $\\lim_{x\\to c^-} f(x) \\neq \\lim_{x\\to c^+} f(x)$."
+  },
+  {
+    q: "Which of the following is an example of secondary data?",
+    choices: [
+      "Previously published academic journals",
+      "Responses from a survey designed by the researcher",
+      "Transcripts from personal interviews conducted yesterday",
+      "Measurements taken in a controlled laboratory experiment"
+    ],
+    correctText: "Previously published academic journals",
+    hint: "Primary data is collected directly by researcher; secondary data comes from pre-existing sources.",
+    explanation: "<strong>Concept:</strong> Secondary data refers to information gathered and published previously by external authors or organizations (e.g., journals, census statistics)."
+  },
+  {
+    q: "Which improper integral requires two separate limits because of both an infinite interval and a discontinuity?",
+    choices: [
+      "$\\int_{1}^{\\infty}\\frac{1}{x}dx$",
+      "$\\int_{1}^{\\infty}\\frac{1}{x^{2}}dx$",
+      "$\\int_{0}^{1}\\frac{1}{\\sqrt{x}}dx$",
+      "$\\int_{1}^{\\infty}\\frac{1}{x+1}dx$"
+    ],
+    correctText: "$\\int_{1}^{\\infty}\\frac{1}{x}dx$",
+    hint: "Analyze integration limits, infinite boundaries, and potential integrands requiring improper integral split.",
+    explanation: "<strong>Concept:</strong> Integrals spanning infinite domains or containing internal/boundary singularities require limit expressions to verify existence and convergence."
+  },
+  {
+    q: "A feedback system has closed-loop poles at $s=-3$, $s=-2$, $s=-1\\pm j4$. Which statement best describes the system?",
+    choices: [
+      "It is stable and exhibits decaying oscillations.",
+      "It has no oscillatory response.",
+      "It is marginally stable.",
+      "It is unstable and exhibits growing oscillations."
+    ],
+    correctText: "It is stable and exhibits decaying oscillations.",
+    hint: "Poles in the left half-plane ($\n\\text{Re}(s) < 0$) imply stability; complex pole pairs create sinusoidal oscillations.",
+    explanation: "<strong>Concept:</strong> All real parts are negative ($-3, -2, -1$), so system is BIBO <strong>stable</strong>. Complex conjugate pair $s = -1 \\pm j4$ produces damped sinusoidal oscillation $e^{-t} \\sin(4t)$."
+  },
+  {
+    q: "If the characteristic roots are $2\\pm5i$, the complementary solution is:",
+    choices: [
+      "$e^{2x}(C_{1}\\cos 5x+C_{2}\\sin 5x)$",
+      "$C_{1}\\cos 2x+C_{2}\\sin 2x$",
+      "$C_{1}e^{5x}+C_{2}e^{-5x}$",
+      "$e^{-2x}(C_{1}\\cos 5x+C_{2}\\sin 5x)$"
+    ],
+    correctText: "$e^{2x}(C_{1}\\cos 5x+C_{2}\\sin 5x)$",
+    hint: "For complex conjugate roots $r = \\alpha \\pm i\\beta$, solution is $y = e^{\\alpha x}(C_1 \\cos \\beta x + C_2 \\sin \\beta x)$.",
+    explanation: "<strong>Formula:</strong> With $\\alpha = 2$ and $\\beta = 5$, general complementary solution is $y_c = e^{2x}(C_1 \\cos 5x + C_2 \\sin 5x)$."
+  },
+  {
+    q: "A vector field has zero divergence everywhere in a region. This indicates that the field is:",
+    choices: [
+      "Solenoidal",
+      "Irrotational",
+      "Conservative",
+      "Uniform"
+    ],
+    correctText: "Solenoidal",
+    hint: "Divergence measures source/sink net flux expansion. Zero divergence means solenoidal.",
+    explanation: "<strong>Definition:</strong> Vector field $\\mathbf{F}$ satisfying $\\nabla \\cdot \\mathbf{F} = 0$ is classified as <strong>solenoidal</strong> (incompressible, source-free)."
+  },
+  {
+    q: "For a standard second-order system, increasing the damping ratio generally causes:",
+    choices: [
+      "Reduced oscillation and overshoot",
+      "Increased natural frequency automatically",
+      "The system to become unstable automatically",
+      "Increased oscillation and overshoot"
+    ],
+    correctText: "Reduced oscillation and overshoot",
+    hint: "Damping ratio $\\zeta$ controls system dissipation. Peak overshoot is $M_p = e^{-\\pi \\zeta / \\sqrt{1-\\zeta^2}}$.",
+    explanation: "<strong>Concept:</strong> Higher damping ratio $\\zeta$ suppresses transient oscillations and lowers peak percentage overshoot, smoothing step response."
+  },
+  {
+    q: "When applying the convolution theorem, the inverse Laplace transform of $F(s)G(s)$ is:",
+    choices: [
+      "The convolution of $f(t)$ and $g(t)$.",
+      "The product of $f(t)$ and $g(t)$.",
+      "The integral of $F(s)$.",
+      "The derivative of $f(t)$."
+    ],
+    correctText: "The convolution of $f(t)$ and $g(t)$.",
+    hint: "Convolution property: $\\mathcal{L}\\{(f * g)(t)\\} = F(s) G(s)$.",
+    explanation: "<strong>Theorem:</strong> The convolution theorem states $\\mathcal{L}^{-1}\\{F(s)G(s)\\} = (f * g)(t) = \\int_{0}^{t} f(\\tau) g(t-\\tau) d\\tau$."
+  },
+  {
+    q: "In numerical differentiation, reducing step size $h$ indefinitely does not always improve accuracy because:",
+    choices: [
+      "Round-off errors become significant.",
+      "The slope estimate oscillates with noisy data.",
+      "The finite difference formula loses stability.",
+      "Truncation error no longer decreases smoothly."
+    ],
+    correctText: "Round-off errors become significant.",
+    hint: "Total error = Truncation error $\\mathcal{O}(h) +$ Round-off error $\\mathcal{O}(\\epsilon / h)$. Extremely small $h$ causes catastrophic cancellation.",
+    explanation: "<strong>Concept:</strong> As $h \\to 0$, truncation error decreases, but floating-point round-off error grows rapidly due to subtracting nearly equal numbers divided by tiny $h$."
+  },
+  {
+    q: "In Mason's Gain Formula, a system has one forward path with gain $P_{1}=10$ and one loop with gain $L_{1}=-0.5$. Assuming no other loops, what is the overall gain?",
+    choices: [
+      "$10/1.5$",
+      "$10(0.5)$",
+      "$10/0.5$",
+      "$10(1.5)$"
+    ],
+    correctText: "$10/1.5$",
+    hint: "Mason's Gain Formula: $T = \\frac{\\sum P_k \\Delta_k}{\\Delta}$. Here $\\Delta = 1 - L_1 = 1 - (-0.5)$.",
+    explanation: "<strong>Calculation:</strong><br>1. Determinant $\\Delta = 1 - L_1 = 1 - (-0.5) = 1.5$.<br>2. Path determinant $\\Delta_1 = 1$.<br>3. Transfer function $T = \\frac{P_1 \\Delta_1}{\\Delta} = \\frac{10}{1.5} = \\frac{20}{3}$."
+  },
+  {
+    q: "Suppose $z=f(x,y)$ where $x=u^{2}-v^{2}$ and $y=2uv$. Which expression correctly represents $\\partial z/\\partial u$ via multivariable chain rule?",
+    choices: [
+      "$\\frac{\\partial z}{\\partial u}=2u\\frac{\\partial z}{\\partial x}+2v\\frac{\\partial z}{\\partial y}$",
+      "$\\frac{\\partial z}{\\partial u}=2u\\frac{\\partial z}{\\partial x}-2v\\frac{\\partial z}{\\partial y}$",
+      "$\\frac{\\partial z}{\\partial u}=(u^{2}-v^{2})\\frac{\\partial z}{\\partial x}+2\\frac{\\partial z}{\\partial y}$",
+      "$\\frac{\\partial z}{\\partial u}=2u\\frac{\\partial z}{\\partial u}+2v\\frac{\\partial z}{\\partial v}$"
+    ],
+    correctText: "$\\frac{\\partial z}{\\partial u}=2u\\frac{\\partial z}{\\partial x}+2v\\frac{\\partial z}{\\partial y}$",
+    hint: "Chain rule: $\\frac{\\partial z}{\\partial u} = \\frac{\\partial z}{\\partial x}\\frac{\\partial x}{\\partial u} + \\frac{\\partial z}{\\partial y}\\frac{\\partial y}{\\partial u}$. Calculate $\\frac{\\partial x}{\\partial u}$ and $\\frac{\\partial y}{\\partial u}$.",
+    explanation: "<strong>Derivation:</strong><br>1. $\\frac{\\partial x}{\\partial u} = 2u$, $\\frac{\\partial y}{\\partial u} = 2v$.<br>2. $\\frac{\\partial z}{\\partial u} = \\frac{\\partial z}{\\partial x}(2u) + \\frac{\\partial z}{\\partial y}(2v) = 2u \\frac{\\partial z}{\\partial x} + 2v \\frac{\\partial z}{\\partial y}$."
+  },
+  {
+    q: "The temperature at a point is given by $T(x,y)=3x^{2}+4y^{2}$. A particle moves so that $x=t$ and $y=2t$. What is the rate of change of temperature with respect to time at $t=1$?",
+    choices: [
+      "38",
+      "56",
+      "44",
+      "22"
+    ],
+    correctText: "38",
+    hint: "Substitute $x=t, y=2t$ into $T(x,y)$ to find $T(t)$, then differentiate with respect to $t$.",
+    explanation: "<strong>Calculation:</strong><br>1. $T(t) = 3(t)^2 + 4(2t)^2 = 3t^2 + 16t^2 = 19t^2$.<br>2. $\\frac{dT}{dt} = 38t$.<br>3. At $t=1$, $\\frac{dT}{dt} = 38(1) = 38$."
+  },
+  {
+    q: "Numerical differentiation is preferred over analytical differentiation when:",
+    choices: [
+      "Data are available only as discrete measurements.",
+      "The relation is defined through simulation outputs.",
+      "The function is expressed only in graphical form.",
+      "The derivative involves unknown empirical constants."
+    ],
+    correctText: "Data are available only as discrete measurements.",
+    hint: "Analytical differentiation requires a closed-form continuous function formula $f(x)$.",
+    explanation: "<strong>Concept:</strong> When physical system variables are sampled at discrete data points (experimental tables/logs) without an explicit algebraic formula, numerical finite difference formulas must be used."
+  },
+  {
+    q: "Given the curve defined implicitly by $x^{2}+y^{2}=16$, what is the value of the second derivative $d^{2}y/dx^{2}$ in terms of $y$?",
+    choices: [
+      "$-16/y^{3}$",
+      "$-x^{2}/y^{3}$",
+      "$16/y^{2}$",
+      "$-4/y^{2}$"
+    ],
+    correctText: "$-16/y^{3}$",
+    hint: "Implicit differentiation: $2x + 2y y' = 0 \\implies y' = -x/y$. Differentiate again using quotient rule.",
+    explanation: "<strong>Calculation:</strong><br>1. $y' = -\\frac{x}{y}$.<br>2. $y'' = -\\frac{y(1) - x y'}{y^2} = -\\frac{y - x(-x/y)}{y^2} = -\\frac{y^2 + x^2}{y^3}$.<br>3. Since $x^2 + y^2 = 16$, $y'' = -\\frac{16}{y^3}$."
+  },
+  {
+    q: "What is the main difference between correlation and convolution?",
+    choices: [
+      "Correlation generally does not involve time-reversing one signal before shifting.",
+      "Correlation generally produces identical results to convolution.",
+      "Convolution can also be applied to discrete signals.",
+      "Correlation generally requires reversing both signals before performing the shifting operation."
+    ],
+    correctText: "Correlation generally does not involve time-reversing one signal before shifting.",
+    hint: "Cross-correlation: $R_{xy}(\\tau) = \\int x(t) y(t+\\tau) dt$. Convolution: $(x*y)(t) = \\int x(\\tau) y(t-\\tau) d\\tau$.",
+    explanation: "<strong>Concept:</strong> Convolution flips (time-reverses) one signal $h(-\\tau)$ before shifting, whereas correlation shifts the un-flipped signal directly to measure similarity."
+  },
+  {
+    q: "Why does a first-order differential equation require only one initial condition for a unique solution?",
+    choices: [
+      "Because the highest derivative is first order.",
+      "Because the equation contains only one variable.",
+      "Because the equation has only one term.",
+      "Because the solution has no constants."
+    ],
+    correctText: "Because the highest derivative is first order.",
+    hint: "Integration order equals number of arbitrary constants in the general solution.",
+    explanation: "<strong>Concept:</strong> Order of a DE corresponds to its highest derivative. Integrating a first-order DE yields one arbitrary constant $C$, which needs exactly one initial condition to determine uniquely."
+  },
+  {
+    q: "In probability theory, integration is used to compute probabilities for:",
+    choices: [
+      "Continuous random variables",
+      "Discrete random variables only",
+      "Binomial distributions only",
+      "Permutations"
+    ],
+    correctText: "Continuous random variables",
+    hint: "Probability $P(a \\le X \\le b) = \\int_a^b f(x) dx$ where $f(x)$ is Probability Density Function (PDF).",
+    explanation: "<strong>Concept:</strong> Continuous random variables are defined over continuous real intervals, requiring definite integration of probability density functions (PDF) to find probability bounds."
+  },
+  {
+    q: "An improper integral over a finite interval may require splitting the interval when:",
+    choices: [
+      "The function is discontinuous at an interior point.",
+      "The interval contains integers.",
+      "The lower limit is zero.",
+      "The function is linear."
+    ],
+    correctText: "The function is discontinuous at an interior point.",
+    hint: "If $f(x)$ has an infinite asymptote at $c \\in (a, b)$, break integral into $\\int_a^c f(x)dx + \\int_c^b f(x)dx$.",
+    explanation: "<strong>Concept:</strong> An interior vertical asymptote $c \\in (a, b)$ makes the integral improper, requiring splitting $\\int_{a}^{b} f(x) dx = \\lim_{t\\to c^-} \\int_a^t f(x)dx + \\lim_{s\\to c^+} \\int_s^b f(x)dx$."
+  },
+  {
+    q: "A mechanical system is modeled by $m x'' + c x' + k x = 0$. If $c^{2}-4mk > 0$, what type of motion occurs?",
+    choices: [
+      "Overdamped motion",
+      "Simple harmonic motion",
+      "Resonance",
+      "Underdamped motion"
+    ],
+    correctText: "Overdamped motion",
+    hint: "Discriminant of characteristic equation $m r^2 + c r + k = 0$ is $c^2 - 4mk$.",
+    explanation: "<strong>Concept:</strong> When $c^2 - 4mk > 0$, roots are real and distinct (damping factor $\\zeta > 1$), resulting in non-oscillatory exponential return to equilibrium known as <strong>overdamped motion</strong>."
+  },
+  {
+    q: "When an arbitrary constant in a general solution is assigned a specific numerical value based on an initial condition, the resulting expression is called a:",
+    choices: [
+      "Particular solution",
+      "General solution",
+      "Homogeneous solution",
+      "Trivial solution"
+    ],
+    correctText: "Particular solution",
+    hint: "General solution $y(x, C)$ becomes a specific solution curve when $C$ is evaluated.",
+    explanation: "<strong>Definition:</strong> A <strong>particular solution</strong> contains no arbitrary parameters, obtained by evaluating constants using boundary/initial conditions."
+  },
+  {
+    q: "Determine whether the differential equation is homogeneous: $\\frac{dy}{dx}=\\frac{x+y}{x-y}$.",
+    choices: [
+      "Yes, because it depends only on $y/x$.",
+      "No, because it contains two variables.",
+      "Yes, because it is linear.",
+      "No, because it has derivatives."
+    ],
+    correctText: "Yes, because it depends only on $y/x$.",
+    hint: "Divide numerator and denominator by $x$: $\\frac{dy}{dx} = \\frac{1 + (y/x)}{1 - (y/x)} = F(y/x)$.",
+    explanation: "<strong>Concept:</strong> A differential equation $\\frac{dy}{dx} = f(x, y)$ is homogeneous of degree zero if its right-hand side can be expressed purely as a function of the single ratio $(y/x)$."
+  },
+  {
+    q: "Find the general solution to the second-order homogeneous differential equation $y'' - 4y' + 13y = 0$.",
+    choices: [
+      "$y=c_{1}e^{2x}\\cos(3x)+c_{2}e^{2x}\\sin(3x)$",
+      "$y=c_{1}e^{2x}+c_{2}e^{3x}$",
+      "$y=c_{1}e^{3x}\\cos(2x)+c_{2}e^{3x}\\sin(2x)$",
+      "$y=c_{1}e^{-2x}\\cos(3x)+c_{2}e^{-2x}\\sin(3x)$"
+    ],
+    correctText: "$y=c_{1}e^{2x}\\cos(3x)+c_{2}e^{2x}\\sin(3x)$",
+    hint: "Characteristic equation: $r^2 - 4r + 13 = 0 \\implies r = \\frac{4 \\pm \\sqrt{16-52}}{2} = 2 \\pm 3i$.",
+    explanation: "<strong>Calculation:</strong><br>1. Roots $r = 2 \\pm 3i \\implies \\alpha = 2, \\beta = 3$.<br>2. General solution $y = e^{\\alpha x}(c_1 \\cos \\beta x + c_2 \\sin \\beta x) = e^{2x}(c_1 \\cos 3x + c_2 \\sin 3x)$."
+  },
+  {
+    q: "An ANOVA for a factorial experiment gives a p-value of 0.02 for Factor A at $\\alpha=0.05$. What conclusion should be made?",
+    choices: [
+      "Factor A has a statistically significant effect.",
+      "Factor A requires the experiment to be repeated.",
+      "Factor A supports the null hypothesis as true.",
+      "Factor A does not show a measurable effect."
+    ],
+    correctText: "Factor A has a statistically significant effect.",
+    hint: "Compare p-value (0.02) with significance level $\\alpha$ (0.05). If $p \\le \\alpha$, reject $H_0$.",
+    explanation: "<strong>Rule:</strong> Since $p\\text{-value} = 0.02 \\le \\alpha = 0.05$, we reject the null hypothesis of no effect and conclude Factor A has a statistically significant effect."
+  },
+  {
+    q: "A periodic signal has an autocorrelation function with repeated peaks separated by 50 samples. If the sampling frequency is 1 kHz, what is the period of the signal?",
+    choices: [
+      "50 ms",
+      "20 ms",
+      "0.05 ms",
+      "500 ms"
+    ],
+    correctText: "50 ms",
+    hint: "Period $T = \\frac{\\text{Sample Lag } N}{f_s}$. Here $N = 50$ samples, $f_s = 1000\\text{ Hz}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $T = \\frac{50 \\text{ samples}}{1000 \\text{ samples/s}} = 0.05 \\text{ seconds} = 50 \\text{ ms}$."
+  },
+  {
+    q: "The mean of a population is 80 with a standard deviation of 10. For a normally distributed population, approximately 95% of data values fall within:",
+    choices: [
+      "60 to 100",
+      "70 to 90",
+      "50 to 110",
+      "75 to 85"
+    ],
+    correctText: "60 to 100",
+    hint: "Empirical Rule (68-95-99.7 rule): 95% of data lies within $\\mu \\pm 2\\sigma$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\mu \\pm 2\\sigma = 80 \\pm 2(10) = 80 \\pm 20$.<br>2. Interval = $[60, 100]$."
+  },
+  {
+    q: "If two LTI systems are cascaded, which property of convolution allows the order of the systems to be interchanged without changing the overall response?",
+    choices: [
+      "Commutative property",
+      "Associative property",
+      "Distributive property",
+      "Identity property"
+    ],
+    correctText: "Commutative property",
+    hint: "$h_1[n] * h_2[n] = h_2[n] * h_1[n]$.",
+    explanation: "<strong>Property:</strong> The <strong>commutative property</strong> ($f * g = g * f$) establishes that cascading LTI systems in series produces identical system transfer function regardless of ordering."
+  },
+  {
+    q: "A vector field $\\mathbf{F}$ has zero divergence everywhere inside a closed volume $V$. What can be concluded about the total outward flux through the boundary surface $S$?",
+    choices: [
+      "The total outward flux is zero.",
+      "The total outward flux equals the volume of V",
+      "The total outward flux is negative.",
+      "The total outward flux is positive."
+    ],
+    correctText: "The total outward flux is zero.",
+    hint: "Divergence Theorem: $\\oiint_S \\mathbf{F} \\cdot d\\mathbf{S} = \\iiint_V (\\nabla \\cdot \\mathbf{F}) dV$.",
+    explanation: "<strong>Theorem:</strong> By Divergence Theorem, if $\\nabla \\cdot \\mathbf{F} = 0$, then total outward flux $\\oiint_S \\mathbf{F} \\cdot d\\mathbf{S} = \\iiint_V 0\\ dV = 0$."
+  },
+  {
+    q: "A Fourier transform pair satisfies $X(\\omega)=\\mathcal{F}\\{x(t)\\}$. If $x(t)$ is shifted in time by $t_{0}$, the frequency-domain effect is:",
+    choices: [
+      "A phase shift factor is introduced.",
+      "The frequency doubles.",
+      "The signal becomes periodic.",
+      "The amplitude becomes zero."
+    ],
+    correctText: "A phase shift factor is introduced.",
+    hint: "Time shift property: $\\mathcal{F}\\{x(t - t_0)\\} = e^{-j\\omega t_0} X(\\omega)$.",
+    explanation: "<strong>Property:</strong> Shifting in time multiplies spectrum magnitude by complex exponential factor $e^{-j\\omega t_0}$, leaving amplitude $|X(\\omega)|$ unchanged while introducing a linear phase shift $-\\omega t_0$."
+  },
+  {
+    q: "Determine the region of convergence (ROC) for $X(z)=\\frac{1}{1-0.5z^{-1}}$ for a right-sided sequence.",
+    choices: [
+      "$|z|>0.5$",
+      "All values of z",
+      "$|z|<0.5$",
+      "$|z|=0.5$"
+    ],
+    correctText: "$|z|>0.5$",
+    hint: "Right-sided sequence $a^n u[n]$ yields ROC exterior to circle passing through outermost pole $|z| > |a|$.",
+    explanation: "<strong>Concept:</strong> Pole is at $z = 0.5$. For right-sided causal sequence $x[n] = (0.5)^n u[n]$, ROC extends outward from the pole: $|z| > 0.5$."
+  },
+  {
+    q: "An LR circuit contains $R=10\\ \\Omega$, $L=2\\text{ H}$, and constant voltage source $E=50\\text{ V}$. If initial current $I(0)=0$, what is $I(t)$ governed by $L \\frac{di}{dt}+RI=E$?",
+    choices: [
+      "$I(t)=5(1-e^{-5t})$",
+      "$I(t)=5e^{-5t}$",
+      "$I(t)=25(1-e^{-10t})$",
+      "$I(t)=5(1-e^{-2t})$"
+    ],
+    correctText: "$I(t)=5(1-e^{-5t})$",
+    hint: "Standard LR transient formula: $I(t) = \\frac{E}{R}(1 - e^{-(R/L)t})$. Calculate $\\frac{E}{R}$ and $\\frac{R}{L}$.",
+    explanation: "<strong>Calculation:</strong><br>1. Steady-state current = $E/R = 50/10 = 5\\text{ A}$.<br>2. Time constant parameter $R/L = 10/2 = 5\\text{ s}^{-1}$.<br>3. Solution $I(t) = 5(1 - e^{-5t})\\text{ A}$."
+  },
+  {
+    q: "A sample produces a 90% confidence interval. This means:",
+    choices: [
+      "The method captures the true parameter in about 90% of repeated samples.",
+      "The estimation technique ensures about 90% reliability across repeated trials.",
+      "The sampling process yields intervals that enclose the parameter 90% of the time.",
+      "The probability model assigns 90% coverage to the constructed interval."
+    ],
+    correctText: "The method captures the true parameter in about 90% of repeated samples.",
+    hint: "Confidence level refers to long-run success frequency of the statistical estimation procedure.",
+    explanation: "<strong>Interpretation:</strong> A 90% confidence level means if sampling is repeated independently under identical conditions, 90% of constructed interval bounds will contain the true population parameter."
+  },
+  {
+    q: "A normal distribution has a mean of 100 and standard deviation of 15. A value of 130 is observed. What does the z-score indicate?",
+    choices: [
+      "The value is two standard deviations above the mean.",
+      "The value is exactly equal to the mean.",
+      "The value lies outside the possible range of the distribution.",
+      "The value is one standard deviation below the mean."
+    ],
+    correctText: "The value is two standard deviations above the mean.",
+    hint: "Calculate $z = \\frac{X - \\mu}{\\sigma} = \\frac{130 - 100}{15}$.",
+    explanation: "<strong>Calculation:</strong> $z = \\frac{130 - 100}{15} = \\frac{30}{15} = +2.0$. Positive sign indicates value lies 2 standard deviations above mean."
+  },
+  {
+    q: "A system's step response has a large percentage overshoot. Which parameter is most likely responsible?",
+    choices: [
+      "Low damping ratio",
+      "High damping ratio",
+      "Zero natural frequency",
+      "High steady-state gain only"
+    ],
+    correctText: "Low damping ratio",
+    hint: "Overshoot equation: $M_p = e^{-\\pi \\zeta / \\sqrt{1-\\zeta^2}} \\times 100\\%$. As $\\zeta \\to 0$, $M_p \\to 100\\%$.",
+    explanation: "<strong>Concept:</strong> Damping ratio $\\zeta$ inversely governs peak overshoot. Lower damping ratios ($\n\\zeta < 0.707$) result in prominent transient oscillations and large overshoot."
+  },
+  {
+    q: "For what interval(s) is the function $f(x)=xe^{-x}$ concave upward?",
+    choices: [
+      "$(2, \\infty)$",
+      "$(-\\infty, 2)$",
+      "$(1, 2)$",
+      "$(-\\infty, 1)$"
+    ],
+    correctText: "$(2, \\infty)$",
+    hint: "Find second derivative $f''(x)$ and determine where $f''(x) > 0$.",
+    explanation: "<strong>Calculation:</strong><br>1. $f'(x) = e^{-x} - x e^{-x} = (1-x)e^{-x}$.<br>2. $f''(x) = -e^{-x} - (1-x)e^{-x} = (x-2)e^{-x}$.<br>3. Concave upward where $f''(x) > 0 \\implies x - 2 > 0 \\implies x \\in (2, \\infty)$."
+  },
+  {
+    q: "A thin flat plate covers the region bounded by $y=x$, $y=0$, and $x=2$. If density is $\\rho(x,y)=3y$, calculate total mass $M$.",
+    choices: [
+      "4",
+      "6",
+      "2",
+      "8"
+    ],
+    correctText: "4",
+    hint: "$M = \\iint \\rho(x,y) dA = \\int_{0}^{2} \\int_{0}^{x} 3y\\ dy\\ dx$.",
+    explanation: "<strong>Calculation:</strong><br>1. Inner integral: $\\int_{0}^{x} 3y dy = [\\frac{3y^2}{2}]_{0}^{x} = \\frac{3x^2}{2}$.<br>2. Outer integral: $\\int_{0}^{2} \\frac{3x^2}{2} dx = [\\frac{x^3}{2}]_{0}^{2} = \\frac{8}{2} = 4$."
+  },
+  {
+    q: "Which integral requires analyzing the integrand before deciding between substitution and integration by parts?",
+    choices: [
+      "$\\int x \\ln(x^{2}) dx$",
+      "$\\int x^{2} dx$",
+      "$\\int e^{x} dx$",
+      "$\\int \\cos x dx$"
+    ],
+    correctText: "$\\int x \\ln(x^{2}) dx$",
+    hint: "Notice that $\\ln(x^2) = 2\\ln x$, or substitution $u=x^2, du=2xdx$ turns it into simpler integrand.",
+    explanation: "<strong>Concept:</strong> $\\int x \\ln(x^2) dx$ can be solved rapidly via $u$-substitution $u = x^2$ ($du = 2x dx$) or rewritten as $2\\int x \\ln x dx$ via integration by parts."
+  },
+  {
+    q: "A system has two cascaded blocks: $G_{1}(s)=\\frac{2}{s+1}$, $G_{2}(s)=\\frac{s+1}{s+3}$. What is the equivalent transfer function?",
+    choices: [
+      "$\\frac{2}{s+3}$",
+      "$\\frac{2}{s+1}$",
+      "$\\frac{s+3}{2}$",
+      "$\\frac{2(s+1)}{s+3}$"
+    ],
+    correctText: "$\\frac{2}{s+3}$",
+    hint: "Cascaded overall transfer function is product $G(s) = G_1(s) \\cdot G_2(s)$.",
+    explanation: "<strong>Calculation:</strong> $G(s) = \\left(\\frac{2}{s+1}\\right) \\cdot \\left(\\frac{s+1}{s+3}\\right) = \\frac{2}{s+3}$."
+  },
+  {
+    q: "For the scalar field $f(x,y)=x^{2}-y^{2}$, the gradient at $(2, 1)$ is:",
+    choices: [
+      "$4\\mathbf{i}-2\\mathbf{j}$",
+      "$4\\mathbf{i}+2\\mathbf{j}$",
+      "$2\\mathbf{i}-\\mathbf{j}$",
+      "$2\\mathbf{i}+4\\mathbf{j}$"
+    ],
+    correctText: "$4\\mathbf{i}-2\\mathbf{j}$",
+    hint: "Gradient formula: $\\nabla f = \\frac{\\partial f}{\\partial x}\\mathbf{i} + \\frac{\\partial f}{\\partial y}\\mathbf{j} = 2x\\mathbf{i} - 2y\\mathbf{j}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\nabla f = 2x\\mathbf{i} - 2y\\mathbf{j}$.<br>2. At $(x,y) = (2,1)$: $\\nabla f = 2(2)\\mathbf{i} - 2(1)\\mathbf{j} = 4\\mathbf{i} - 2\\mathbf{j}$."
+  },
+  {
+    q: "An object tracks a path defined by $x=t^{2}+1$ and $y=2t^{3}-t$. What is the slope of the tangent line at $t=1$?",
+    choices: [
+      "5/2",
+      "1",
+      "5",
+      "1/5"
+    ],
+    correctText: "5/2",
+    hint: "Parametric slope $\\frac{dy}{dx} = \\frac{dy/dt}{dx/dt}$. Evaluate derivatives at $t=1$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\frac{dx}{dt} = 2t$, $\\frac{dy}{dt} = 6t^2 - 1$.<br>2. At $t=1$: $\\frac{dx}{dt} = 2$, $\\frac{dy}{dt} = 5$.<br>3. Slope $\\frac{dy}{dx} = \\frac{5}{2}$."
+  },
+  {
+    q: "A $2^{4}$ factorial experiment is planned with 2 replicates per treatment combination. If 8 additional validation runs are performed, what is the total number of runs?",
+    choices: [
+      "40",
+      "32",
+      "24",
+      "48"
+    ],
+    correctText: "40",
+    hint: "Base runs = $2^k \\times \\text{replicates}$. Add validation runs.",
+    explanation: "<strong>Calculation:</strong><br>1. Factorial combinations = $2^4 = 16$.<br>2. Replicated runs = $16 \\times 2 = 32$.<br>3. Total runs = $32 + 8 = 40$."
+  },
+  {
+    q: "A PDE contains $\\frac{\\partial u}{\\partial t}$ and $\\frac{\\partial^{2}u}{\\partial x^{2}}$. Which physical phenomenon is commonly modeled by this equation?",
+    choices: [
+      "Heat conduction",
+      "Population growth only",
+      "Simple algebraic balance",
+      "Projectile motion"
+    ],
+    correctText: "Heat conduction",
+    hint: "1D parabolic PDE: $\\frac{\\partial u}{\\partial t} = \nalpha \\frac{\\partial^2 u}{\\partial x^2}$.",
+    explanation: "<strong>Concept:</strong> The equation $\\frac{\\partial u}{\\partial t} = k \\frac{\\partial^2 u}{\\partial x^2}$ is Fourier's 1D parabolic <strong>Heat Conduction Equation</strong> (diffusion process)."
+  },
+  {
+    q: "Why is random sampling often preferred in data collection?",
+    choices: [
+      "It reduces selection bias.",
+      "It avoids data analysis.",
+      "It eliminates measurement errors.",
+      "It guarantees a larger population."
+    ],
+    correctText: "It reduces selection bias.",
+    hint: "Random sampling prevents systemic skewing caused by non-probability convenience picking.",
+    explanation: "<strong>Concept:</strong> Random sampling removes intentional and unintentional researcher selection bias, maximizing generalizability of sample inferences to target population."
+  },
+  {
+    q: "Which component combines the reference input and feedback signal to produce the error signal?",
+    choices: [
+      "Summing point",
+      "Takeoff point",
+      "Transfer function block",
+      "Output transducer"
+    ],
+    correctText: "Summing point",
+    hint: "Block diagram element represented by circle with plus/minus signs.",
+    explanation: "<strong>Concept:</strong> A <strong>summing junction/point</strong> algebraically combines incoming signals ($e(t) = r(t) \\mp b(t)$) to generate control error driving signals."
+  },
+  {
+    q: "A closed curve $C$ encloses region $R$. Which theorem transforms a line integral around $C$ into a double integral over $R$?",
+    choices: [
+      "Green's Theorem",
+      "Stokes Theorem",
+      "Divergence Theorem",
+      "Fundamental Theorem of Arithmetic"
+    ],
+    correctText: "Green's Theorem",
+    hint: "Green's Theorem: $\\oint_C (P dx + Q dy) = \\iint_R \\left(\\frac{\\partial Q}{\\partial x} - \\frac{\\partial P}{\\partial y}\\right) dA$.",
+    explanation: "<strong>Theorem:</strong> <strong>Green's Theorem</strong> relates a line integral around a simple closed 2D boundary curve $C$ to a double integral over the enclosed plane region $R$."
+  },
+  {
+    q: "A vector field is defined as $\\mathbf{F}=yz\\mathbf{i}+xz\\mathbf{j}+xy\\mathbf{k}$. What can be concluded about its curl?",
+    choices: [
+      "The curl is zero.",
+      "The curl is always positive.",
+      "The curl is always negative.",
+      "The curl depends only on x."
+    ],
+    correctText: "The curl is zero.",
+    hint: "Compute $\\nabla \\times \\mathbf{F} = \\left(\\frac{\\partial(xy)}{\\partial y} - \\frac{\\partial(xz)}{\\partial z}\\right)\\mathbf{i} - \\dots$",
+    explanation: "<strong>Calculation:</strong><br>1. $\\nabla \\times \\mathbf{F} = (x-x)\\mathbf{i} - (y-y)\\mathbf{j} + (z-z)\\mathbf{k} = \\mathbf{0}$.<br>2. Field is irrotational (conservative, $\\mathbf{F} = \\nabla(xyz)$)."
+  },
+  {
+    q: "In correlation analysis, the variable representing the relative shift between signals is commonly called:",
+    choices: [
+      "Lag",
+      "Bandwidth",
+      "Phase",
+      "Gain"
+    ],
+    correctText: "Lag",
+    hint: "Cross-correlation parameter $\\tau$ or $k$ in $R_{xy}[k]$.",
+    explanation: "<strong>Definition:</strong> Time displacement parameter $k$ or $\\tau$ shifting one waveform across another during correlation evaluation is called the <strong>lag parameter</strong>."
+  },
+  {
+    q: "Determine the family of orthogonal trajectories to the ellipses defined by $x^{2}+2y^{2}=C$.",
+    choices: [
+      "$y=kx^{2}$",
+      "$y^{2}=kx$",
+      "$x=ky^{2}$",
+      "$y=kx$"
+    ],
+    correctText: "$y=kx^{2}$",
+    hint: "Implicit differentiation: $2x + 4y y' = 0 \\implies y' = -\\frac{x}{2y}$. Orthogonal trajectories have slope $y'_{orth} = \\frac{2y}{x}$.",
+    explanation: "<strong>Calculation:</strong><br>1. Original slope $y' = -\\frac{x}{2y}$.<br>2. Perpendicular slope $\\frac{dy}{dx} = \\frac{2y}{x} \\implies \\frac{dy}{y} = 2\\frac{dx}{x}$.<br>3. Integrate: $\\ln y = 2\\ln x + \\ln k \\implies y = k x^2$ (family of parabolas)."
+  },
+  {
+    q: "Using the shifting theorem on the s-axis, find the Laplace transform of $f(t)=e^{3t}\\sin(2t)$.",
+    choices: [
+      "$\\frac{2}{(s-3)^{2}+4}$",
+      "$\\frac{2}{s^{2}+4}$",
+      "$\\frac{2}{(s+3)^{2}+4}$",
+      "$\\frac{s-3}{(s-3)^{2}+4}$"
+    ],
+    correctText: "$\\frac{2}{(s-3)^{2}+4}$",
+    hint: "$\ meathcal{L}\\{\\sin(2t)\\} = \\frac{2}{s^2+4}$. Apply s-shifting $s \\to s-3$.",
+    explanation: "<strong>Formula:</strong> First shifting theorem: $\\mathcal{L}\\{e^{at}g(t)\\} = G(s-a)$. Since $\\mathcal{L}\\{\\sin 2t\\} = \\frac{2}{s^2+4}$, replacing $s$ with $s-3$ yields $\\frac{2}{(s-3)^2 + 4}$."
+  },
+  {
+    q: "The correlation coefficient between study hours and exam scores is $r=0.85$. What conclusion can be made?",
+    choices: [
+      "There is a strong positive linear relationship.",
+      "There is no significant linear relationship.",
+      "There is a clear negative linear relationship.",
+      "There is a strong negative linear relationship."
+    ],
+    correctText: "There is a strong positive linear relationship.",
+    hint: "$r$ range is $[-1, 1]$. Values near $+1$ represent strong positive linear correlation.",
+    explanation: "<strong>Interpretation:</strong> $r = +0.85$ is close to $+1$, indicating a strong direct/positive linear association between study hours and test results."
+  },
+  {
+    q: "A spherical balloon expands such that its radius increases at $2\\text{ cm/s}$. How fast is volume changing when radius is $5\\text{ cm}$?",
+    choices: [
+      "$200\\pi\\text{ cm}^{3}/\\text{s}$",
+      "$50\\pi\\text{ cm}^{3}/\\text{s}$",
+      "$100\\pi\\text{ cm}^{3}/\\text{s}$",
+      "$40\\pi\\text{ cm}^{3}/\\text{s}$"
+    ],
+    correctText: "$200\\pi\\text{ cm}^{3}/\\text{s}$",
+    hint: "Sphere volume $V = \\frac{4}{3}\\pi r^3$. Differentiate with respect to time $t$: $\\frac{dV}{dt} = 4\\pi r^2 \\frac{dr}{dt}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\frac{dV}{dt} = 4\\pi r^2 \\frac{dr}{dt}$.<br>2. Plug $r = 5\\text{ cm}, \\frac{dr}{dt} = 2\\text{ cm/s}$: $\\frac{dV}{dt} = 4\\pi (5)^2 (2) = 4\\pi (25) (2) = 200\\pi\\text{ cm}^3/\\text{s}$."
+  },
+  {
+    q: "Compute the inverse Laplace transform of $F(s)=\\frac{1}{s(s-3)}$.",
+    choices: [
+      "$\\frac{1}{3}(e^{3t}-1)$",
+      "$\\frac{1}{3}e^{3t}$",
+      "$e^{3t}-1$",
+      "$\\frac{1}{3}(1-e^{3t})$"
+    ],
+    correctText: "$\\frac{1}{3}(e^{3t}-1)$",
+    hint: "Partial fractions: $\\frac{1}{s(s-3)} = \\frac{A}{s} + \\frac{B}{s-3} = -\\frac{1/3}{s} + \\frac{1/3}{s-3}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\frac{1}{s(s-3)} = \\frac{1}{3(s-3)} - \\frac{1}{3s}$.<br>2. Inverse transform: $\\frac{1}{3}e^{3t} - \\frac{1}{3}(1) = \\frac{1}{3}(e^{3t} - 1)$."
+  },
+  {
+    q: "A tank contains 200 L pure water. Brine with $3\\text{ g/L}$ salt pumps in at $4\\text{ L/min}$ and well-mixed solution exits at $4\\text{ L/min}$. What is the DE for salt $A(t)$?",
+    choices: [
+      "$\\frac{dA}{dt}=12-\\frac{A}{50}$",
+      "$\\frac{dA}{dt}=3+\\frac{A}{50}$",
+      "$\\frac{dA}{dt}=3-\\frac{A}{50}$",
+      "$\\frac{dA}{dt}=12-\\frac{A}{200}$"
+    ],
+    correctText: "$\\frac{dA}{dt}=12-\\frac{A}{50}$",
+    hint: "Rate equation: $\\frac{dA}{dt} = R_{in} - R_{out}$. $R_{in} = (3)(4) = 12$, $R_{out} = \\frac{A}{200} \\times 4 = \\frac{A}{50}$.",
+    explanation: "<strong>Derivation:</strong><br>1. Input rate $R_{in} = 3\\text{ g/L} \\times 4\\text{ L/min} = 12\\text{ g/min}$.<br>2. Output rate $R_{out} = \\frac{A(t)\\text{ g}}{200\\text{ L}} \\times 4\\text{ L/min} = \\frac{A}{50}\\text{ g/min}$.<br>3. DE: $\\frac{dA}{dt} = 12 - \\frac{A}{50}$."
+  },
+  {
+    q: "The function $f(x)=x^{4}-4x^{3}$ has a critical point at $x=3$. Which statement best describes this point?",
+    choices: [
+      "Local minimum",
+      "Inflection point",
+      "Local maximum",
+      "Neither maximum nor minimum"
+    ],
+    correctText: "Local minimum",
+    hint: "Use second derivative test: $f''(x) = 12x^2 - 24x$. Evaluate $f''(3)$.",
+    explanation: "<strong>Calculation:</strong><br>1. $f'(x) = 4x^3 - 12x^2 = 4x^2(x-3) = 0 \\implies x=0, 3$.<br>2. $f''(x) = 12x^2 - 24x$.<br>3. $f''(3) = 12(9) - 24(3) = 108 - 72 = 36 > 0 \\implies$ concave up, so $x=3$ is a <strong>local minimum</strong>."
+  },
+  {
+    q: "Determine the value of parameter $k$ for which the simultaneous linear system $2x+4y=12$ and $3x+ky=18$ has infinitely many solutions:",
+    choices: [
+      "k = 6",
+      "k = 12",
+      "k = 4",
+      "k = 8"
+    ],
+    correctText: "k = 6",
+    hint: "Infinitely many solutions occur when system equations are linearly dependent (proportional coefficients).",
+    explanation: "<strong>Calculation:</strong><br>1. Ratio condition: $\\frac{3}{2} = \\frac{k}{4} = \\frac{18}{12} = 1.5$.<br>2. $k = 4 \\times 1.5 = 6$."
+  },
+  {
+    q: "The Laplace transform converts continuous-time convolution into:",
+    choices: [
+      "Multiplication of transforms",
+      "Differentiation of transforms",
+      "Subtraction of transforms",
+      "Addition of transforms"
+    ],
+    correctText: "Multiplication of transforms",
+    hint: "Convolution in time domain translates to simple algebraic multiplication in dynamic s-domain.",
+    explanation: "<strong>Property:</strong> $\\mathcal{L}\\{f(t) * g(t)\\} = F(s) \\cdot G(s)$. Time domain convolution maps directly to frequency domain multiplication."
+  },
+  {
+    q: "What fundamental property of a function makes the Intermediate Value Theorem (IVT) hold true over $[a, b]$?",
+    choices: [
+      "The graph must be drawn completely without lifting the pencil from the paper, ensuring no gaps or breaks in continuity",
+      "The function must always follow a perfectly linear path across the interval, connecting the two endpoints directly without deviation",
+      "The values of $f(a)$ and $f(b)$ must both be positive numbers located within the chosen interval",
+      "The function must have a limit that approaches infinity exactly at the endpoints of the interval"
+    ],
+    correctText: "The graph must be drawn completely without lifting the pencil from the paper, ensuring no gaps or breaks in continuity",
+    hint: "IVT requires unbroken domain mapping over closed intervals.",
+    explanation: "<strong>Concept:</strong> <strong>Continuity</strong> over $[a, b]$ guarantees that the function takes on every intermediate value between $f(a)$ and $f(b)$ without gaps or jumps."
+  },
+  {
+    q: "The divergence of vector field $\\mathbf{F}=P\\mathbf{i}+Q\\mathbf{j}+R\\mathbf{k}$ is:",
+    choices: [
+      "$\\frac{\\partial P}{\\partial x}+\\frac{\\partial Q}{\\partial y}+\\frac{\\partial R}{\\partial z}$",
+      "PQR",
+      "$P+Q+R$",
+      "$\\frac{\\partial P}{\\partial y}+\\frac{\\partial Q}{\\partial x}+\\frac{\\partial R}{\\partial z}$"
+    ],
+    correctText: "$\\frac{\\partial P}{\\partial x}+\\frac{\\partial Q}{\\partial y}+\\frac{\\partial R}{\\partial z}$",
+    hint: "Divergence operator $\\nabla \\cdot \\mathbf{F}$ sums spatial partial derivatives along corresponding coordinate directions.",
+    explanation: "<strong>Definition:</strong> $\\nabla \\cdot \\mathbf{F} = \\frac{\\partial P}{\\partial x} + \\frac{\\partial Q}{\\partial y} + \\frac{\\partial R}{\\partial z}$."
+  },
+  {
+    q: "Why does the power rule of integration $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$ require $n \\neq -1$?",
+    choices: [
+      "Because division by zero would occur in the formula",
+      "Because constants cannot be integrated",
+      "Because negative powers cannot be integrated",
+      "Because the function becomes linear"
+    ],
+    correctText: "Because division by zero would occur in the formula",
+    hint: "Substitute $n = -1$ into denominator $n+1$. What is $\\int x^{-1} dx$ instead?",
+    explanation: "<strong>Concept:</strong> Setting $n = -1$ yields denominator $-1+1 = 0$ (division by zero). The special case $n = -1$ integrates to logarithmic function $\\int x^{-1} dx = \\ln|x| + C$."
+  },
+  {
+    q: "An experiment uses a $2^{3}$ factorial design. The researcher observes that changing Factor A has different effects depending on Factor B level. What does this indicate?",
+    choices: [
+      "An interaction effect",
+      "A randomization error",
+      "An experimental error",
+      "A main effect only"
+    ],
+    correctText: "An interaction effect",
+    hint: "When response impact of one factor depends on setting level of another factor.",
+    explanation: "<strong>Definition:</strong> An <strong>interaction effect</strong> (e.g., $AB$) occurs when the effect of one input factor on the output response varies across levels of another factor."
+  },
+  {
+    q: "A system of equations has infinitely many solutions when:",
+    choices: [
+      "The equations represent the same line.",
+      "The constants are zero.",
+      "The lines are perpendicular.",
+      "The slopes are different."
+    ],
+    correctText: "The equations represent the same line.",
+    hint: "Geometric interpretation of 2D linear systems: intersecting lines (1), parallel (0), coincident (infinite).",
+    explanation: "<strong>Concept:</strong> Coincident equations represent identical lines, yielding infinitely many common intersection points along the line."
+  },
+  {
+    q: "If $z=4(\\cos 30^{\\circ}+i\\sin 30^{\\circ})$, find $z^{2}$ using De Moivre's theorem.",
+    choices: [
+      "$16(\\cos 60^{\\circ}+i\\sin 60^{\\circ})$",
+      "$8(\\cos 30^{\\circ}+i\\sin 30^{\\circ})$",
+      "$16(\\cos 30^{\\circ}+i\\sin 30^{\\circ})$",
+      "$4(\\cos 60^{\\circ}+i\\sin 60^{\\circ})$"
+    ],
+    correctText: "$16(\\cos 60^{\\circ}+i\\sin 60^{\\circ})$",
+    hint: "De Moivre's Theorem: $[r(\\cos \\theta + i \\sin \\theta)]^n = r^n (\\cos n\\theta + i \\sin n\\theta)$.",
+    explanation: "<strong>Calculation:</strong><br>1. $r^2 = 4^2 = 16$.<br>2. $2\\theta = 2(30^{\\circ}) = 60^{\\circ}$.<br>3. $z^2 = 16(\\cos 60^{\\circ} + i\\sin 60^{\\circ})$."
+  },
+  {
+    q: "A population standard deviation is unknown and sample size is small ($n<30$). Which distribution should be used for inference?",
+    choices: [
+      "t-distribution",
+      "Uniform distribution",
+      "Binomial distribution",
+      "Normal distribution"
+    ],
+    correctText: "t-distribution",
+    hint: "Student's t-distribution accounts for extra variability when substituting sample $s$ for population $\\sigma$.",
+    explanation: "<strong>Concept:</strong> When population standard deviation $\\sigma$ is unknown and sample size $n < 30$, Student's <strong>t-distribution</strong> with $df = n-1$ must be used."
+  },
+  {
+    q: "Production yield is $P(x,y)=4x^{2}+3y^{3}$ where $x=t^{2}$ and $y=2t$. Which expression calculates rate of change $dP/dt$?",
+    choices: [
+      "$16t^{3}+72t^{2}$",
+      "$8xt^{2}+9y^{2}$",
+      "$16t^{3}+36t^{2}$",
+      "$8x+9y^{2}$"
+    ],
+    correctText: "$16t^{3}+72t^{2}$",
+    hint: "Chain rule: $\\frac{dP}{dt} = \\frac{\\partial P}{\\partial x}\\frac{dx}{dt} + \\frac{\\partial P}{\\partial y}\\frac{dy}{dt}$. Substitute $x(t)$ and $y(t)$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\frac{\\partial P}{\\partial x} = 8x$, $\\frac{dx}{dt} = 2t \\implies 8(t^2)(2t) = 16t^3$.<br>2. $\\frac{\\partial P}{\\partial y} = 9y^2$, $\\frac{dy}{dt} = 2 \\implies 9(2t)^2(2) = 72t^2$.<br>3. $\\frac{dP}{dt} = 16t^3 + 72t^2$."
+  },
+  {
+    q: "An object moves according to $x=t$, $y=t^{2}$. If the object is at point $(4, 16)$, what is the parameter value $t$?",
+    choices: [
+      "4",
+      "16",
+      "3",
+      "2"
+    ],
+    correctText: "4",
+    hint: "Match coordinate position directly to parameter formulas $x(t) = 4$.",
+    explanation: "<strong>Calculation:</strong> Given $x = t = 4$ and $y = t^2 = 4^2 = 16$, the parameter $t = 4$."
+  },
+  {
+    q: "A particle's acceleration is $a(t)=6t^{2}-4t$. What is the rate of change of its acceleration (jerk) at $t=3$?",
+    choices: [
+      "32",
+      "12",
+      "24",
+      "42"
+    ],
+    correctText: "32",
+    hint: "Jerk $j(t) = a'(t) = \\frac{d}{dt}(6t^2 - 4t) = 12t - 4$. Evaluate at $t=3$.",
+    explanation: "<strong>Calculation:</strong><br>1. Jerk $j(t) = a'(t) = 12t - 4$.<br>2. At $t=3$, $j(3) = 12(3) - 4 = 36 - 4 = 32$."
+  },
+  {
+    q: "A Z-transform has poles at $z=0.5$ and $z=2$. Which region of convergence (ROC) is impossible?",
+    choices: [
+      "$|z|=1$",
+      "$0.5<|z|<2$",
+      "$|z|<0.5$",
+      "$|z|>2$"
+    ],
+    correctText: "$|z|=1$",
+    hint: "An ROC must be an open connected annular region in z-plane bounded by poles, not a single standalone isolated circle line.",
+    explanation: "<strong>Concept:</strong> Regions of Convergence (ROC) must be open set domains bounded by circles passing through poles (e.g., $|z| > 2$, $|z| < 0.5$, or $0.5 < |z| < 2$). A single circle line $|z| = 1$ is not an open region."
+  }
+];
+
+function shuffleArray(array) {
+  let arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+let quizQuestions = [];
+let userAnswers = [];
+let hintShown = [];
+
+let currentIndex = 0;
+let score = 0;
+let answeredCount = 0;
+let correctCount = 0;
+let incorrectCount = 0;
+
+function initQuiz() {
+  const shuffledRaw = shuffleArray(rawQuestionsData);
+
+  quizQuestions = shuffledRaw.map((item) => {
+    const shuffledChoices = shuffleArray(item.choices);
+    return {
+      q: item.q,
+      choices: shuffledChoices,
+      correctIndex: shuffledChoices.indexOf(item.correctText),
+      hint: item.hint,
+      explanation: item.explanation
+    };
+  });
+
+  userAnswers = new Array(quizQuestions.length).fill(null);
+  hintShown = new Array(quizQuestions.length).fill(false);
+  
+  currentIndex = 0;
+  score = 0;
+  answeredCount = 0;
+  correctCount = 0;
+  incorrectCount = 0;
+
+  document.getElementById('quiz-card').style.display = 'flex';
+  document.getElementById('results-card').style.display = 'none';
+
+  updateStatsDisplay();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const currentQ = quizQuestions[currentIndex];
+
+  document.getElementById('progress-indicator').textContent = `Item ${currentIndex + 1} of ${quizQuestions.length}`;
+  document.getElementById('question-text').innerHTML = currentQ.q;
+
+  const hintBox = document.getElementById('hint-box');
+  const btnHint = document.getElementById('btn-hint');
+  
+  if (hintShown[currentIndex]) {
+    hintBox.style.display = 'block';
+    hintBox.innerHTML = `<strong>Hint:</strong> ${currentQ.hint}`;
+    btnHint.textContent = 'Hide Hint';
+  } else {
+    hintBox.style.display = 'none';
+    btnHint.textContent = 'Show Hint';
+  }
+
+  const choicesContainer = document.getElementById('choices-container');
+  choicesContainer.innerHTML = '';
+
+  const selectedIndex = userAnswers[currentIndex];
+  const isAnswered = selectedIndex !== null;
+
+  currentQ.choices.forEach((choiceText, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = choiceText;
+
+    if (isAnswered) {
+      btn.disabled = true;
+      if (index === currentQ.correctIndex) {
+        btn.classList.add('reveal-correct');
+      }
+      if (index === selectedIndex) {
+        if (selectedIndex === currentQ.correctIndex) {
+          btn.classList.add('selected-correct');
+        } else {
+          btn.classList.add('selected-wrong');
+        }
+      }
+    } else {
+      btn.onclick = () => selectAnswer(index);
+    }
+
+    choicesContainer.appendChild(btn);
+  });
+
+  const explanationBox = document.getElementById('explanation-box');
+  const explanationTitle = document.getElementById('explanation-title');
+  const explanationBody = document.getElementById('explanation-body');
+
+  if (isAnswered) {
+    explanationBox.style.display = 'block';
+    explanationBody.innerHTML = currentQ.explanation;
+
+    if (selectedIndex === currentQ.correctIndex) {
+      explanationBox.className = 'explanation-box correct-mode';
+      explanationTitle.innerHTML = 'Correct!';
+    } else {
+      explanationBox.className = 'explanation-box wrong-mode';
+      explanationTitle.innerHTML = 'Incorrect';
+    }
+  } else {
+    explanationBox.style.display = 'none';
+  }
+
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  
+  const btnNext = document.getElementById('btn-next');
+  if (currentIndex === quizQuestions.length - 1) {
+    btnNext.textContent = isAnswered ? 'Finish Quiz' : 'Next';
+  } else {
+    btnNext.textContent = 'Next';
+  }
+
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    MathJax.typesetPromise();
+  }
+}
+
+function selectAnswer(choiceIndex) {
+  if (userAnswers[currentIndex] !== null) return;
+
+  userAnswers[currentIndex] = choiceIndex;
+  const currentQ = quizQuestions[currentIndex];
+
+  answeredCount++;
+  if (choiceIndex === currentQ.correctIndex) {
+    score++;
+    correctCount++;
+  } else {
+    incorrectCount++;
+  }
+
+  updateStatsDisplay();
+  renderQuestion();
+}
+
+function toggleHint() {
+  hintShown[currentIndex] = !hintShown[currentIndex];
+  renderQuestion();
+}
+
+function updateStatsDisplay() {
+  document.getElementById('stat-score').textContent = score;
+  document.getElementById('stat-correct').textContent = correctCount;
+  document.getElementById('stat-incorrect').textContent = incorrectCount;
+  
+  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+  document.getElementById('stat-accuracy').textContent = `${accuracy}%`;
+}
+
+function prevQuestion() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+function nextQuestion() {
+  if (currentIndex < quizQuestions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-card').style.display = 'none';
+  const resultsCard = document.getElementById('results-card');
+  resultsCard.style.display = 'block';
+
+  const pct = Math.round((score / quizQuestions.length) * 100);
+  document.getElementById('final-score').textContent = `${score}/${quizQuestions.length}`;
+  document.getElementById('final-pct').textContent = `${pct}%`;
+
+  let msg = '';
+  if (pct >= 80) {
+    msg = 'Outstanding performance! You are well prepared for the ECE Comprehensive Licensure Exam.';
+  } else if (pct >= 60) {
+    msg = 'Good job! Review the concepts you missed to boost your score higher.';
+  } else {
+    msg = 'Keep practicing! Focus on understanding formulas, laws, and foundational engineering math principles.';
+  }
+  document.getElementById('final-msg').textContent = msg;
+}
+
+function restartQuiz() {
+  initQuiz();
+}
+
+window.onload = function() {
+  initQuiz();
+};
+</script>
+
+</body>
+</html>

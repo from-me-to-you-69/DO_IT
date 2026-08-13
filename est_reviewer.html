@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE Comprehensive Exam Reviewer</title>
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --correct: #10b981;
+            --correct-bg: #ecfdf5;
+            --correct-border: #059669;
+            --wrong: #f43f5e;
+            --wrong-bg: #fff1f2;
+            --wrong-border: #e11d48;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px 16px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: var(--card-bg);
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .progress-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* Question Card */
+        .quiz-card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text-main);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .btn-hint {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .btn-hint:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        /* Hint Container */
+        .hint-box {
+            background: #fffbeb;
+            border: 1px solid #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: #92400e;
+            display: none;
+            word-wrap: break-word;
+            overflow-x: auto;
+        }
+
+        /* Choices */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .choice-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 1rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .choice-btn.selected-correct {
+            background: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #065f46 !important;
+            font-weight: 600;
+        }
+
+        .choice-btn.selected-wrong {
+            background: var(--wrong-bg) !important;
+            border-color: var(--wrong-border) !important;
+            color: #9f1239 !important;
+            font-weight: 600;
+        }
+
+        .choice-btn.reveal-correct {
+            background: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #065f46 !important;
+        }
+
+        .choice-btn:disabled {
+            cursor: default;
+        }
+
+        /* Explanation Box */
+        .explanation-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 10px;
+            margin-bottom: 16px;
+            display: none;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .explanation-box.correct-mode {
+            border-color: #a7f3d0;
+            background: #f0fdf4;
+        }
+        .explanation-box.correct-mode .explanation-title {
+            color: #047857;
+        }
+
+        .explanation-box.wrong-mode {
+            border-color: #fecdd3;
+            background: #fff1f2;
+        }
+        .explanation-box.wrong-mode .explanation-title {
+            color: #be123c;
+        }
+
+        .explanation-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+        /* MathJax Mobile Overflow Handling */
+        mjx-container, .MathJax {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            vertical-align: middle;
+            display: inline-block;
+            padding: 2px 0;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: auto;
+        }
+
+        .btn-nav {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex: 1;
+            max-width: 160px;
+            text-align: center;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-nav:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* Results Screen */
+        .results-card {
+            background: var(--card-bg);
+            padding: 40px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+            display: none;
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            border: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 24px auto;
+        }
+
+        .score-num {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .score-pct {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .results-msg {
+            font-size: 1.1rem;
+            margin-bottom: 28px;
+            color: #475569;
+        }
+
+        .btn-restart {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-restart:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 0 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .question-header {
+                flex-direction: column;
+            }
+            .btn-hint {
+                align-self: flex-start;
+            }
+            .quiz-card {
+                padding: 18px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <div class="quiz-title">ECE Comprehensive Exam Reviewer</div>
+        <div class="progress-badge" id="progress-indicator">Item 1 of 100</div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar" id="stats-bar">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-score">0</div>
+            <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: var(--correct);" id="stat-correct">0</div>
+            <div class="stat-label">Correct</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: var(--wrong);" id="stat-incorrect">0</div>
+            <div class="stat-label">Incorrect</div>
+        </div>
+    </div>
+
+    <!-- Main Quiz Card -->
+    <div class="quiz-card" id="quiz-card">
+        <div class="question-header">
+            <div class="question-text" id="question-text">Loading question...</div>
+            <button class="btn-hint" id="btn-hint" onclick="toggleHint()">Show Hint</button>
+        </div>
+
+        <div class="hint-box" id="hint-box"></div>
+
+        <div class="choices-container" id="choices-container"></div>
+
+        <div class="explanation-box" id="explanation-box">
+            <div class="explanation-title" id="explanation-title">Explanation</div>
+            <div class="explanation-body" id="explanation-body"></div>
+        </div>
+
+        <div class="nav-controls">
+            <button class="btn-nav" id="btn-prev" onclick="prevQuestion()">Previous</button>
+            <button class="btn-nav" id="btn-next" onclick="nextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="results-card" id="results-card">
+        <div class="results-title">Quiz Completed!</div>
+        <div class="score-circle">
+            <div class="score-num" id="final-score">0/100</div>
+            <div class="score-pct" id="final-pct">0%</div>
+        </div>
+        <div class="results-msg" id="final-msg">Great effort! Keep practicing to master ECE topics.</div>
+        <button class="btn-restart" onclick="restartQuiz()">Restart Reviewer</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>Created by K.</footer>
+</div>
+
+<script>
+// Comprehensive database of all 100 ECE board exam items
+const rawQuestionsData = [
+  {
+    q: "In impedance matching using the Smith Chart, why is moving along a constant VSWR circle equivalent to changing the electrical length of the line?",
+    choices: [
+      "Because the attenuation constant is zero in lossless lines",
+      "Because the characteristic impedance changes with line length",
+      "Because the reflection coefficient magnitude remains constant",
+      "Because the normalized load impedance is re-scaled"
+    ],
+    correctText: "Because the reflection coefficient magnitude remains constant",
+    hint: "Recall that on a lossless transmission line, the magnitude of the reflection coefficient $|\n\\Gamma|$ does not change with distance.",
+    explanation: "<strong>Concept:</strong> For a lossless transmission line, traveling along the line alters only the phase angle $\\theta$ of the reflection coefficient $\\Gamma = |\\Gamma| e^{j\\theta}$, while its magnitude $|\\Gamma|$ remains constant.<br><strong>Exam Tip:</strong> On the Smith Chart, constant $|\n\\Gamma|$ draws a circle centered at $(1,0)$, which is defined as a constant VSWR circle ($VSWR = \\frac{1+|\\Gamma|}{1-|\\Gamma|}$)."
+  },
+  {
+    q: "Why is the intermediate frequency (IF) chosen lower than the carrier frequency in receivers?",
+    choices: [
+      "Because it allows easier filtering and stable amplification",
+      "Because it guarantees infinite bandwidth for all signals",
+      "Because it eliminates the need for antenna tuning circuits",
+      "Because it converts continuous signals into discrete samples"
+    ],
+    correctText: "Because it allows easier filtering and stable amplification",
+    hint: "Lower fixed frequencies allow high-Q filters to achieve higher selectivity and stable high gain without parasitic oscillation.",
+    explanation: "<strong>Concept:</strong> Operating at a lower, fixed IF simplifies bandpass filter design (achieving high selectivity $Q = f_c / B$) and prevents high-frequency stray feedback oscillations in amplification stages."
+  },
+  {
+    q: "A channel has bandwidth of 3 kHz and an SNR of 30 dB. What is the Shannon capacity?",
+    choices: [
+      "29.9 kbps",
+      "33.6 kbps",
+      "19.3 kbps",
+      "27.1 kbps"
+    ],
+    correctText: "29.9 kbps",
+    hint: "Use Shannon-Hartley theorem: $C = B \\log_2(1 + SNR)$. Convert $SNR_{dB} = 30\\text{ dB}$ into linear scale ($10^{30/10} = 1000$).",
+    explanation: "<strong>Formula:</strong> $C = B \\log_2(1 + \\text{SNR})$.<br><strong>Calculation:</strong><br>1. $\\text{SNR} = 10^{30/10} = 1000$<br>2. $C = 3000 \\times \\log_2(1001) \\approx 3000 \\times 9.9672 = 29,901.6 \\text{ bps} \\approx 29.9 \\text{ kbps}$."
+  },
+  {
+    q: "BISYNC is vulnerable compared to HDLC because it:",
+    choices: [
+      "Relies on specific characters for framing",
+      "Eliminates the need for synchronization between devices",
+      "Provides constant voltage supply across communication links",
+      "Uses bit patterns that clearly separate control from data"
+    ],
+    correctText: "Relies on specific characters for framing",
+    hint: "BISYNC is a character-oriented protocol (uses ASCII/EBCDIC control codes like STX, ETX), whereas HDLC is bit-oriented (bit-stuffing).",
+    explanation: "<strong>Concept:</strong> BISYNC relies on specific byte control characters (e.g., STX, ETX) for frame delimiting. If payload data accidentally contains these byte codes, transparent transmission breaks down without character stuffing."
+  },
+  {
+    q: "In analog sensor interfacing, the most significant challenge is that:",
+    choices: [
+      "Input modules eliminate the need for calibration of sensor outputs",
+      "Signal conditioning must ensure compatibility with ADC resolution",
+      "Digital modules cannot store continuous voltage signals directly",
+      "PLC memory cannot allocate space for analog signal processing"
+    ],
+    correctText: "Signal conditioning must ensure compatibility with ADC resolution",
+    hint: "Analog sensors output low-amplitude, noisy continuous signals that must be scaled, filtered, and offset to match the ADC input range.",
+    explanation: "<strong>Concept:</strong> Analog sensors output continuous low-voltage/current signals (e.g., 4–20 mA, 0–10 mV) that require amplification, filtering, and level matching to maximize the ADC dynamic range and resolution."
+  },
+  {
+    q: "A Yagi antenna has a gain of 10 dBi and a front-to-back ratio of 15 dB. It is located 15 km from a transmitter with an ERP of 100 kW at a frequency of 10 MHz. The antenna is connected to a receiver via a matched feedline with a loss of 2 dB. Calculate the signal power supplied to the receiver if the antenna is pointed directly toward the transmitting antenna.",
+    choices: [
+      "26.2 mW",
+      "16.0 mW",
+      "16.9 mW",
+      "16.5 mW"
+    ],
+    correctText: "16.0 mW",
+    hint: "First find power density $p = \\frac{ERP}{4\\pi d^2}$, effective aperture $A_e = \\frac{\\lambda^2 G_r}{4\\pi}$, received antenna power $P_r = p \\cdot A_e$, then subtract 2 dB line loss.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\lambda = \\frac{3 \\times 10^8}{10 \\times 10^6} = 30 \\text{ m}$.<br>2. Power density $p = \\frac{100,000}{4 \\pi (15,000)^2} = 3.5368 \\times 10^{-5} \\text{ W/m}^2$.<br>3. Gain $G_r = 10^{10/10} = 10$.<br>4. $A_e = \\frac{\\lambda^2 G_r}{4 \\pi} = \\frac{30^2 \\times 10}{4 \\pi} = 716.2 \\text{ m}^2$.<br>5. $P_{ant} = p \\times A_e = 0.02533 \\text{ W} = 25.33 \\text{ mW}$.<br>6. Accounting for 2 dB feedline loss ($10^{-2/10} = 0.631$): $P_{rec} = 25.33 \\times 0.631 \\approx 16.0 \\text{ mW}$."
+  },
+  {
+    q: "In optical sensing applications, phototransistors are often preferred over photodiodes because they:",
+    choices: [
+      "Offer broader spectral response without filtering",
+      "Provide current amplification signals",
+      "Eliminate the need for biasing during operation",
+      "Reduce thermal noise through reverse biasing"
+    ],
+    correctText: "Provide current amplification signals",
+    hint: "Phototransistors combine a photodiode base-collector junction with an internal bipolar junction transistor gain stage.",
+    explanation: "<strong>Concept:</strong> Phototransistors incorporate internal bipolar transistor current gain ($\n\\beta \\approx 100 - 500$), providing much higher current sensitivity than simple photodiodes."
+  },
+  {
+    q: "Why is the noise figure of the first stage most critical in a receiver chain?",
+    choices: [
+      "Because the noise figure depends only on the final audio amplifier",
+      "Because it dominates the overall noise performance of the system",
+      "Because the noise figure remains constant regardless of stage order",
+      "Because later stages completely cancel the noise contribution of the first stage"
+    ],
+    correctText: "Because it dominates the overall noise performance of the system",
+    hint: "Examine Friis' Formula for Noise Factor: $F_{tot} = F_1 + \\frac{F_2 - 1}{G_1} + \\frac{F_3 - 1}{G_1 G_2} + \\dots$",
+    explanation: "<strong>Friis Formula:</strong> $F_{tot} = F_1 + \\frac{F_2 - 1}{G_1} + \\dots$<br><strong>Reasoning:</strong> The noise contributed by subsequent stages is divided by the cumulative power gain of preceding stages ($G_1, G_1 G_2$). Thus, $F_1$ dominates total noise figure."
+  },
+  {
+    q: "In data acquisition systems, signal conditioning is necessary because it:",
+    choices: [
+      "Adjusts sensor output for compatibility with ADC input",
+      "Stores sensor signals for later digital processing",
+      "Converts digital signals into analog voltages for transmission",
+      "Eliminates the need for calibration of measurement devices"
+    ],
+    correctText: "Adjusts sensor output for compatibility with ADC input",
+    hint: "Think about modifying voltage ranges, removing out-of-band noise, and providing impedance transformation.",
+    explanation: "<strong>Concept:</strong> Signal conditioning transforms raw physical sensor signals (amplification, filtering, level shifting, attenuation) into clean voltage levels suitable for an Analog-to-Digital Converter (ADC)."
+  },
+  {
+    q: "If the two towers of a 950-kHz antenna are separated by 120 electrical degrees, what is the tower separation in feet?",
+    choices: [
+      "176 ft",
+      "346 ft",
+      "231 ft",
+      "235 ft"
+    ],
+    correctText: "346 ft",
+    hint: "Wavelength $\\lambda (\\text{ft}) = \\frac{984}{f (\\text{MHz})}$. Electrical distance $d = \\frac{\\theta}{360^\\circ} \\times \\lambda$.",
+    explanation: "<strong>Calculation:</strong><br>1. $f = 0.950 \\text{ MHz}$.<br>2. $\\lambda = \\frac{984}{0.950} = 1035.79 \\text{ ft}$.<br>3. $d = \\frac{120^\\circ}{360^\\circ} \\times 1035.79 = \\frac{1}{3} \\times 1035.79 \\approx 345.26 \\text{ ft} \\approx 346 \\text{ ft}$."
+  },
+  {
+    q: "If the first stage of a receiver has a high noise figure, what is the analytical implication for the overall system performance?",
+    choices: [
+      "The noise figure remains constant regardless of stage order",
+      "Later stages completely cancel the noise contribution of the first stage",
+      "The first stage dominates the total noise figure of the system",
+      "The overall noise figure depends only on the last stage gain"
+    ],
+    correctText: "The first stage dominates the total noise figure of the system",
+    hint: "According to Friis' noise formula, $F_{tot}$ is anchored by $F_1$.",
+    explanation: "<strong>Concept:</strong> High noise figure at the low-noise amplifier (LNA) stage degrades the overall system SNR directly because subsequent stage noise reduction division cannot undo noise introduced at the input."
+  },
+  {
+    q: "LANs are generally more efficient than WANs because they:",
+    choices: [
+      "Guarantee permanent storage of transmitted data in memory",
+      "Operate over shorter distances with lower latency",
+      "Provide constant voltage supply across communication links",
+      "Eliminate the need for routing protocols entirely"
+    ],
+    correctText: "Operate over shorter distances with lower latency",
+    hint: "Consider physical spatial coverage, propagation delay, and low bit error rates (BER) in local networks.",
+    explanation: "<strong>Concept:</strong> Local Area Networks (LANs) span smaller geographic areas, yielding negligible propagation delays, minimal packet loss/skew, and significantly higher data rates compared to Wide Area Networks (WANs)."
+  },
+  {
+    q: "A WAN link has a propagation delay of 50 ms and a transmission rate of 10 Mbps. If a packet size is 1000 bytes, what is the total latency?",
+    choices: [
+      "53 ms",
+      "50 ms",
+      "51 ms",
+      "52 ms"
+    ],
+    correctText: "51 ms",
+    hint: "Total Latency = Propagation Delay + Transmission Delay. $t_{trans} = \\frac{\\text{Packet Size (bits)}}{\\text{Transmission Rate (bps)}}$.",
+    explanation: "<strong>Calculation:</strong><br>1. Packet Size = $1000 \\times 8 = 8000 \\text{ bits}$.<br>2. Transmission Delay $t_{trans} = \\frac{8000}{10 \\times 10^6} = 0.0008 \\text{ s} = 0.8 \\text{ ms}$.<br>3. Total Latency = $50 \\text{ ms} + 0.8 \\text{ ms} = 50.8 \\text{ ms} \\approx 51 \\text{ ms}$."
+  },
+  {
+    q: "Why does the sampling theorem emphasize band-limited signals?",
+    choices: [
+      "Because band-limited signals always have infinite duration in time domain",
+      "Because only band-limited signals avoid spectral overlap during sampling",
+      "Because band-limited signals cannot be represented in discrete-time form",
+      "Because band-limited signals inherently eliminate quantization noise"
+    ],
+    correctText: "Because only band-limited signals avoid spectral overlap during sampling",
+    hint: "Nyquist criterion ($f_s \\ge 2 f_{max}$) requires a strict upper frequency limit $f_{max}$ to prevent spectral aliasing.",
+    explanation: "<strong>Concept:</strong> Nyquist-Shannon sampling requires that signal frequencies beyond $f_s/2$ are zero. Non-band-limited signals create overlapping spectral replicas (aliasing) that corrupt reconstruction."
+  },
+  {
+    q: "A CDMA system has a processing gain of 100 and operates with an SNR requirement of 10 dB. What is the maximum number of users supported?",
+    choices: [
+      "20",
+      "25",
+      "5",
+      "10"
+    ],
+    correctText: "10",
+    hint: "Capacity equation for interference-limited CDMA: $N \\approx \\frac{\\text{Processing Gain}}{\\text{SNR}_{req} \\text{ (linear)}}$.",
+    explanation: "<strong>Formula:</strong> $N = \\frac{PG}{SNR}$.<br><strong>Calculation:</strong> $SNR = 10^{10/10} = 10$. Thus $N = \\frac{100}{10} = 10$ simultaneous users."
+  },
+  {
+    q: "A signal that has finite energy but zero average power is classified as:",
+    choices: [
+      "Periodic signal with repeating waveform",
+      "Energy signal with finite duration",
+      "Power signal with infinite duration",
+      "Random signal with unpredictable behavior"
+    ],
+    correctText: "Energy signal with finite duration",
+    hint: "If $0 < E < \\infty$, then $P = \\lim_{T\\to\\infty} \\frac{E}{T} = 0$.",
+    explanation: "<strong>Concept:</strong> Signals limited in time duration (non-periodic pulses) have non-zero finite energy ($0 < E < \\infty$). Since power is energy per unit time over an infinite horizon, their average power $P = 0$."
+  },
+  {
+    q: "A digital ASK system transmits at a symbol rate of 2 Msps, with each symbol carrying 1 bit. What is the bit rate?",
+    choices: [
+      "1 Mbps",
+      "2 Mbps",
+      "8 Mbps",
+      "4 Mbps"
+    ],
+    correctText: "2 Mbps",
+    hint: "Bit rate $R_b = R_s \\times n$, where $n$ is bits per symbol.",
+    explanation: "<strong>Calculation:</strong> $R_b = 2 \\text{ Msps} \\times 1 \\text{ bit/symbol} = 2 \\text{ Mbps}$."
+  },
+  {
+    q: "Error detection is often preferred over error correction in high-speed communication systems because detection:",
+    choices: [
+      "Eliminates the need for synchronization circuits",
+      "Converts analog signals directly into mechanical vibrations",
+      "Requires fewer redundant bits and less processing",
+      "Guarantees zero distortion in all transmitted signals"
+    ],
+    correctText: "Requires fewer redundant bits and less processing",
+    hint: "Forward Error Correction (FEC) adds significant parity overhead and decoding complexity compared to simple CRC checks.",
+    explanation: "<strong>Concept:</strong> Error detection mechanisms (e.g., CRC, checksums) add minimal redundant bit overhead and require basic hardware, maximizing throughput in low-error channels."
+  },
+  {
+    q: "In comparing two-wire and four-wire circuits, the key trade-off is that:",
+    choices: [
+      "Two wire is simpler and cheaper, while four wire offers better quality",
+      "Two wire requires more cabling, while four wire reduces cabling",
+      "Two wire ensures redundancy, while four wire eliminates redundancy",
+      "Two wire eliminates noise completely, while four wire increases noise"
+    ],
+    correctText: "Two wire is simpler and cheaper, while four wire offers better quality",
+    hint: "Four-wire circuits isolate full-duplex transmit and receive paths, avoiding hybrid transformer echo/cross-talk.",
+    explanation: "<strong>Concept:</strong> Two-wire lines use a single pair for bidirectional signal propagation (cheaper/simpler local loops), whereas four-wire lines separate transmit and receive lines, eliminating hybrid loss and echo."
+  },
+  {
+    q: "What is the capture effect in FM receivers?",
+    choices: [
+      "Both signals are received equally regardless of strength",
+      "The stronger signal dominates",
+      "The receiver becomes unstable and oscillates",
+      "The weaker signal cancels the stronger one"
+    ],
+    correctText: "The stronger signal dominates",
+    hint: "FM limiters and phase detectors suppress co-channel interference if one signal is slightly stronger ($>1-3\\text{ dB}$).",
+    explanation: "<strong>Concept:</strong> The capture effect is a phenomenon in FM receivers where, when two signals share the same frequency, the receiver completely suppresses the weaker signal and demodulates only the stronger one."
+  },
+  {
+    q: "In phased array systems, beam steering is achieved primarily through:",
+    choices: [
+      "Adjusting the relative phase of signals across elements",
+      "Increasing the transmitted power uniformly across the array",
+      "Altering the polarization angle of each radiating element",
+      "Modifying the modulation scheme applied to the carrier"
+    ],
+    correctText: "Adjusting the relative phase of signals across elements",
+    hint: "Constructive interference occurs in a designated spatial direction when incremental phase shifts $\\beta = -k d \\cos \\theta_0$ are applied.",
+    explanation: "<strong>Concept:</strong> By controlling the progressive phase shift $\\Delta \\phi$ fed into individual array antenna elements, constructive wavefront superposition is directed electronically without mechanical rotation."
+  },
+  {
+    q: "The intrinsic impedance of free space is significant because it:",
+    choices: [
+      "Defines the maximum gain achievable by parabolic antennas",
+      "Determines the modulation bandwidth of isotropic sources",
+      "Controls the reflection coefficient of ground-based transmitters",
+      "Relates electric field strength to power density in free space"
+    ],
+    correctText: "Relates electric field strength to power density in free space",
+    hint: "Intrinsic impedance $\\eta_0 = \\sqrt{\\frac{\\mu_0}{\\varepsilon_0}} = \\frac{E}{H} \\approx 377\\ \\Omega$.",
+    explanation: "<strong>Formula:</strong> $\\mathcal{P} = \\frac{E^2}{\\eta_0}$.<br><strong>Concept:</strong> The intrinsic impedance $\\eta_0 \\approx 377\\ \\Omega$ relates electric field intensity ($E$ in V/m) directly to magnetic field intensity ($H$ in A/m) and radiated power density ($\n\\mathcal{P}$ in $\\text{W/m}^2$)."
+  },
+  {
+    q: "A key advantage of bit-oriented protocols over character-oriented protocols is that they:",
+    choices: [
+      "Eliminate the need for error detection mechanisms",
+      "Provide continuous monitoring of environmental conditions",
+      "Guarantee constant voltage supply across communication lines",
+      "Provide more efficient use of bandwidth"
+    ],
+    correctText: "Provide more efficient use of bandwidth",
+    hint: "Bit-oriented protocols (like HDLC) send raw binary data streams framed by single-byte flag patterns.",
+    explanation: "<strong>Concept:</strong> Bit-oriented protocols frame data at the bit level using bit-stuffing. They avoid transmitting full control character sequences, maximizing payload bandwidth efficiency."
+  },
+  {
+    q: "In frequency shift keying (FSK), the digital information is represented by...",
+    choices: [
+      "Shifts in the width of the carrier signal",
+      "Shifts in the amplitude of the carrier signal",
+      "Shifts in the frequency of the carrier signal",
+      "Shifts in the phase of the carrier signal"
+    ],
+    correctText: "Shifts in the frequency of the carrier signal",
+    hint: "Binary '1' is mapped to Mark frequency $f_m$, and binary '0' is mapped to Space frequency $f_s$.",
+    explanation: "<strong>Concept:</strong> FSK shifts the carrier frequency between discrete values (e.g., $f_{mark}$ for 1, $f_{space}$ for 0) while keeping amplitude constant."
+  },
+  {
+    q: "The signal-to-noise ratio is 30 dB at the input to an amplifier and 27.3 dB at the output. What is the noise figure and noise temperature of the amplifier?",
+    choices: [
+      "2.7 dB; 249 K",
+      "5.7 dB; 149 K",
+      "3.7 dB; 349 K",
+      "1.7 dB; 549 K"
+    ],
+    correctText: "2.7 dB; 249 K",
+    hint: "$NF = SNR_{in,dB} - SNR_{out,dB}$. Noise Factor $F = 10^{NF/10}$. Equivalent temperature $T_e = T_0 (F - 1)$ where $T_0 = 290\\text{ K}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $NF = 30 \\text{ dB} - 27.3 \\text{ dB} = 2.7 \\text{ dB}$.<br>2. Linear Noise Factor $F = 10^{2.7/10} = 10^{0.27} \\approx 1.862$.<br>3. $T_e = 290 \\times (1.862 - 1) = 290 \\times 0.862 = 249.98 \\text{ K} \\approx 249 \\text{ K}$."
+  },
+  {
+    q: "In a PPM system, the reference pulse occurs at 2 ms. If the modulating signal shifts the pulse by 0.5 ms, what is the new pulse position?",
+    choices: [
+      "1.5 ms",
+      "3.0 ms",
+      "2.5 ms",
+      "2.0 ms"
+    ],
+    correctText: "2.5 ms",
+    hint: "Pulse position modulation varies the time displacement of the pulse relative to a unmodulated reference position.",
+    explanation: "<strong>Calculation:</strong> $t_{new} = t_{ref} + \\Delta t = 2.0 \\text{ ms} + 0.5 \\text{ ms} = 2.5 \\text{ ms}$."
+  },
+  {
+    q: "A cubical cavity resonator made of copper σ = 5.8 x 10^7 mho/m is to be operated at 15 GHz. Find the quality factor.",
+    choices: [
+      "8436.7",
+      "8376.4",
+      "8736.4",
+      "8367.4"
+    ],
+    correctText: "8736.4",
+    hint: "Quality factor for $TE_{101}$ mode in a cubical cavity: $Q = \\frac{a}{3 \\delta}$, where skin depth $\\delta = \\frac{1}{\\sqrt{\\pi f \\mu \\sigma}}$.",
+    explanation: "<strong>Calculation:</strong><br>1. Resonant wavelength for cube side $a$: $f = \\frac{c}{\\sqrt{2}a} \\implies a = \\frac{3 \\times 10^8}{\\sqrt{2} \\times 15 \\times 10^9} = 0.014142 \\text{ m}$.<br>2. Skin depth $\\delta = \\frac{1}{\\sqrt{\\pi \\times (15 \\times 10^9) \\times (4\\pi \\times 10^{-7}) \\times (5.8 \\times 10^7)}} = 5.397 \\times 10^{-7} \\text{ m}$.<br>3. $Q = \\frac{a}{3 \\delta} = \\frac{0.014142}{3 \\times 5.397 \\times 10^{-7}} = 8736.4$."
+  },
+  {
+    q: "A PWM system has a pulse period of 1 ms. If the modulating signal produces a pulse width of 0.4 ms, what is the duty cycle?",
+    choices: [
+      "40%",
+      "30%",
+      "50%",
+      "20%"
+    ],
+    correctText: "40%",
+    hint: "Duty Cycle (%) = $\\frac{\\text{Pulse Width}}{\\text{Total Period}} \\times 100\\%$.",
+    explanation: "<strong>Calculation:</strong> $\\text{Duty Cycle} = \\frac{0.4 \\text{ ms}}{1.0 \\text{ ms}} \\times 100\\% = 40\\%$."
+  },
+  {
+    q: "An IIR filter is given by: y[n] = x[n] + 0.5y[n-1]. If x[0] = 1, x[1] = 0, and initial condition y[-1] = 0, what is y[1]?",
+    choices: [
+      "1.00",
+      "0.50",
+      "1.50",
+      "0.25"
+    ],
+    correctText: "0.50",
+    hint: "Calculate recursively step-by-step: first $y[0]$, then $y[1]$.",
+    explanation: "<strong>Calculation:</strong><br>1. For $n=0$: $y[0] = x[0] + 0.5 y[-1] = 1 + 0.5(0) = 1$.<br>2. For $n=1$: $y[1] = x[1] + 0.5 y[0] = 0 + 0.5(1) = 0.50$."
+  },
+  {
+    q: "Comparing metallic waveguides and optical fibers, the most significant advantage of fibers is:",
+    choices: [
+      "Reduced dependence on refractive index contrast",
+      "Higher cutoff frequency for dominant modes",
+      "Extremely low attenuation over long distances",
+      "Greater immunity to polarization mismatch"
+    ],
+    correctText: "Extremely low attenuation over long distances",
+    hint: "Optical fiber loss is roughly $0.2\\text{ dB/km}$ at $1550\\text{ nm}$, compared to tens of dB/100m for hollow waveguides.",
+    explanation: "<strong>Concept:</strong> Silica optical fibers achieve extremely low loss ($\n\\approx 0.2 \\text{ dB/km}$), enabling multi-kilometer repeaterless transmissions impossible with metal waveguides."
+  },
+  {
+    q: "Amplitude shift keying (ASK) is considered less robust compared to other digital modulation schemes because amplitude variations:",
+    choices: [
+      "Are easily corrupted by channel noise",
+      "Convert signals into mechanical vibrations",
+      "Guarantee infinite bandwidth for signals",
+      "Eliminate the need for carrier frequencies"
+    ],
+    correctText: "Are easily corrupted by channel noise",
+    hint: "Additive thermal noise directly modulates signal amplitude in transmission media.",
+    explanation: "<strong>Concept:</strong> Noise in channels predominantly manifests as random amplitude fluctuations. ASK is susceptible to decision threshold errors because its binary states depend entirely on envelope amplitude."
+  },
+  {
+    q: "Given x[n] = {1, 2} and h[n] = {1, 1}, what is y[1] from convolution y[n] = x[n] * h[n]?",
+    choices: [
+      "4",
+      "2",
+      "1",
+      "3"
+    ],
+    correctText: "3",
+    hint: "Discrete linear convolution formula: $y[1] = x[0]h[1] + x[1]h[0]$.",
+    explanation: "<strong>Calculation:</strong><br>1. $y[0] = x[0]h[0] = 1 \\times 1 = 1$.<br>2. $y[1] = x[0]h[1] + x[1]h[0] = (1 \\times 1) + (2 \\times 1) = 1 + 2 = 3$."
+  },
+  {
+    q: "In SCADA systems, supervisory control is essential because it:",
+    choices: [
+      "Eliminates the need for programmable logic controllers",
+      "Provides direct mechanical control of HVAC dampers only",
+      "Monitors and manages multiple subsystems",
+      "Ensures constant voltage supply to electrical substations"
+    ],
+    correctText: "Monitors and manages multiple subsystems",
+    hint: "SCADA = Supervisory Control and Data Acquisition.",
+    explanation: "<strong>Concept:</strong> SCADA provides high-level centralized monitoring, alarm processing, and remote setpoint adjustment over widely distributed industrial control field devices (PLCs, RTUs)."
+  },
+  {
+    q: "A resistor of 10 kΩ is connected across a bandwidth of 20 kHz at room temperature. What is the thermal noise power?",
+    choices: [
+      "8.28 x10^-13 W",
+      "8.28 x10^-14 W",
+      "8.28 x10^-15 W",
+      "8.28 x10^-17 W"
+    ],
+    correctText: "8.28 x10^-17 W",
+    hint: "Johnson-Nyquist thermal noise power formula: $P_n = k T B$, where Boltzmann constant $k = 1.38 \\times 10^{-23} \\text{ J/K}$ and $T = 300 \\text{ K}$.",
+    explanation: "<strong>Calculation:</strong><br>$$P_n = k T B = (1.38 \\times 10^{-23}) \\times 300 \\times (20 \\times 10^3) = 8.28 \\times 10^{-17} \\text{ W}$$"
+  },
+  {
+    q: "Time division multiplexing (TDM) is suitable for digital communication systems because it separates signals by assigning distinct:",
+    choices: [
+      "Code sequences",
+      "Wavelength bands",
+      "Time slots",
+      "Frequency bands"
+    ],
+    correctText: "Time slots",
+    hint: "TDM divides transmission time into discrete non-overlapping interval slots.",
+    explanation: "<strong>Concept:</strong> TDM interleaves multiple digitizing streams into distinct periodic time slots along a single high-speed channel."
+  },
+  {
+    q: "A concentrator differs from a multiplexer because it:",
+    choices: [
+      "Collects multiple inputs and forwards them to a central point",
+      "Provides simultaneous transmission of multiple bits at once",
+      "Guarantees constant monitoring of environmental conditions",
+      "Eliminates the need for physical cabling between devices"
+    ],
+    correctText: "Collects multiple inputs and forwards them to a central point",
+    hint: "Concentrators dynamically buffer and aggregate low-speed lines into fewer output lines based on active traffic demand.",
+    explanation: "<strong>Concept:</strong> While a classic MUX allocates fixed time/frequency slots, a concentrator acts as an intelligent store-and-forward aggregator allocating bandwidth dynamically based on usage."
+  },
+  {
+    q: "In advanced HVAC control, demand-controlled ventilation is primarily implemented to:",
+    choices: [
+      "Adjust airflow based on occupancy and indoor air quality",
+      "Maintain constant airflow regardless of external conditions",
+      "Provide uniform temperature across all building zones",
+      "Eliminate the need for mechanical filtration systems"
+    ],
+    correctText: "Adjust airflow based on occupancy and indoor air quality",
+    hint: "Sensors ($CO_2$ monitors) measure real-time room occupancy to adjust fresh air intake dampers.",
+    explanation: "<strong>Concept:</strong> Demand-Controlled Ventilation (DCV) regulates fan speeds and air damper positions according to real-time $CO_2$ sensors, reducing energy consumption when space occupancy is low."
+  },
+  {
+    q: "Why does pulse position modulation (PPM) offer better noise immunity compared to pulse amplitude modulation (PAM)?",
+    choices: [
+      "Because information is carried in the timing of pulses",
+      "Because information is carried in the width of pulses",
+      "Because information is carried in the frequency of pulses",
+      "Because information is carried in the amplitude of pulses"
+    ],
+    correctText: "Because information is carried in the timing of pulses",
+    hint: "PPM pulses maintain constant amplitude, permitting hard amplitude limiting at the receiver.",
+    explanation: "<strong>Concept:</strong> Because PPM encodes information in the time edge position rather than height, amplitude noise spikes can be clipped using hard limiters without distorting signal timing."
+  },
+  {
+    q: "A three-stage amplifier has the following power gains and noise figures (as ratios, not in decibels) for each stage: Stage 1, power gain = 10, noise figure = 3; Stage 2, power gain = 20, noise figure = 4; Stage 3, power gain = 30, noise figure = 5. Calculate the total gain and noise figure both in decibels.",
+    choices: [
+      "73.8 dB; 2.5 dB",
+      "7.8 dB; 2.2 dB",
+      "83.7 dB; 2.3 dB",
+      "37.8 dB; 5.2 dB"
+    ],
+    correctText: "37.8 dB; 5.2 dB",
+    hint: "Total Gain $A_p = A_1 A_2 A_3$. Friis Noise Factor $F_{tot} = F_1 + \\frac{F_2 - 1}{A_1} + \\frac{F_3 - 1}{A_1 A_2}$. Convert both to dB.",
+    explanation: "<strong>Calculation:</strong><br>1. Total linear gain $A_p = 10 \\times 20 \\times 30 = 6000$.<br>2. Gain in dB = $10 \\log_{10}(6000) = 37.78 \\text{ dB} \\approx 37.8 \\text{ dB}$.<br>3. $F_{tot} = 3 + \\frac{4 - 1}{10} + \\frac{5 - 1}{200} = 3 + 0.3 + 0.02 = 3.32$.<br>4. $NF_{tot} = 10 \\log_{10}(3.32) = 5.21 \\text{ dB} \\approx 5.2 \\text{ dB}$."
+  },
+  {
+    q: "Why is convolution used in analyzing linear time-invariant (LTI) systems?",
+    choices: [
+      "Because it ensures stability regardless of system parameters",
+      "Because it always produces periodic signals from random inputs",
+      "Because it relates input and impulse response to output",
+      "Because it eliminates the need for Fourier transforms"
+    ],
+    correctText: "Because it relates input and impulse response to output",
+    hint: "$y(t) = x(t) * h(t)$. Any LTI system response is completely characterized by its impulse response $h(t)$.",
+    explanation: "<strong>Concept:</strong> Due to linearity and time-invariance, decomposing an input signal into weighted impulses allows system output calculation via linear superposition integral/sum $y(t) = \\int x(\\tau) h(t-\\tau) d\\tau$."
+  },
+  {
+    q: "A properly matched transmission line has a loss of 1.5 dB/100 m. If 10 W is supplied to one end of the line, how many watts reach the load, 27 m away?",
+    choices: [
+      "9.9 W",
+      "7.2 W",
+      "10 W",
+      "9.1 W"
+    ],
+    correctText: "9.1 W",
+    hint: "Calculate total loss in dB for 27 meters first: $\\text{Loss} = 1.5 \\text{ dB} \\times \\frac{27}{100}$. Then use $P_{out} = P_{in} \\cdot 10^{-\\text{Loss}/10}$.",
+    explanation: "<strong>Calculation:</strong><br>1. Total loss in dB = $1.5 \\times \\frac{27}{100} = 0.405 \\text{ dB}$.<br>2. $P_{out} = 10 \\times 10^{-0.405/10} = 10 \\times 10^{-0.0405} = 10 \\times 0.91096 = 9.11 \\text{ W} \\approx 9.1 \\text{ W}$."
+  },
+  {
+    q: "Why are communication channels often classified as wired or wireless?",
+    choices: [
+      "Because it eliminates the need for transmitters and receivers",
+      "Because the physical medium determines how signals propagate",
+      "Because it guarantees infinite bandwidth for all signals",
+      "Because it converts digital signals into analog signals automatically"
+    ],
+    correctText: "Because the physical medium determines how signals propagate",
+    hint: "Guided (guided EM waves along conductors/glass) vs unguided (free-space wave radiation) fundamental physical boundary conditions.",
+    explanation: "<strong>Concept:</strong> Propagation characteristics (attenuation rates, noise mechanisms, multipath interference, and boundary limits) are defined by whether media is guided (wired) or unguided (wireless)."
+  },
+  {
+    q: "In analyzing topologies, bus networks are less scalable than star networks because they:",
+    choices: [
+      "Experience increased collisions as more devices are added",
+      "Ensure continuous synchronization of all communication devices",
+      "Provide constant voltage supply across all connected devices",
+      "Eliminate the need for centralized control of communication"
+    ],
+    correctText: "Experience increased collisions as more devices are added",
+    hint: "Shared media bus topologies suffer from CSMA/CD packet collision rate explosions as network node density grows.",
+    explanation: "<strong>Concept:</strong> In a bus topology, all nodes share a single transmission channel. Adding nodes increases media contention, collisions, and retransmissions, degrading performance."
+  },
+  {
+    q: "The basic purpose of an electronic communication system is to:",
+    choices: [
+      "Store data permanently in digital memory.",
+      "Convert analog signals into mechanical motion.",
+      "Transfer information from one point to another.",
+      "Generate random signals for testing purposes."
+    ],
+    correctText: "Transfer information from one point to another.",
+    hint: "Fundamental definition of telecommunication systems.",
+    explanation: "<strong>Concept:</strong> At its core, an electronic communication system processes, modulates, transmits, propagates, and recovers information reliably between a source location and a distant destination."
+  },
+  {
+    q: "On a Smith Chart, moving clockwise along the outer circle corresponds to:",
+    choices: [
+      "Decreasing resistance",
+      "Increasing resistance",
+      "Adding inductive reactance",
+      "Adding capacitive reactance"
+    ],
+    correctText: "Adding inductive reactance",
+    hint: "The upper half of the Smith Chart represents positive reactance ($+jX$). Moving clockwise adds positive reactance.",
+    explanation: "<strong>Concept:</strong> Moving clockwise along a constant resistance circle (or the outer perimeter where $R=0$) increases normalized inductive reactance $+jX$ (series inductance)."
+  },
+  {
+    q: "In a ring topology, data transmission is controlled by:",
+    choices: [
+      "A backbone cable that carries all signals simultaneously",
+      "A mesh of redundant links between multiple devices",
+      "A token or signal passed sequentially between devices",
+      "A central hub that coordinates all transmissions"
+    ],
+    correctText: "A token or signal passed sequentially between devices",
+    hint: "Token Ring networks prevent collisions by circulating a control bit frame around the ring.",
+    explanation: "<strong>Concept:</strong> Token Ring networks manage channel access control using a circulating token frame. A station can transmit data only when holding the token."
+  },
+  {
+    q: "An SSB transmitter transmits on the USB with a (suppressed) carrier frequency of 7.2 MHz. It is modulated by two tones, with frequencies of 1 kHz and 2.5 kHz and equal amplitude. The transmitter PEP is 75 W into a 50 Ω load. The carrier and unwanted sideband are each suppressed by 60 dB. Calculate the average power into the load?",
+    choices: [
+      "53.7 W",
+      "37.5 W",
+      "375 W",
+      "75.3 W"
+    ],
+    correctText: "37.5 W",
+    hint: "For a two-equal-tone un-modulated envelope SSB signal, Peak Envelope Power (PEP) relates to average power by $P_{avg} = \\frac{1}{2} PEP$.",
+    explanation: "<strong>Calculation:</strong><br>$$P_{avg} = \\frac{PEP}{2} = \\frac{75 \\text{ W}}{2} = 37.5 \\text{ W}$$"
+  },
+  {
+    q: "In optical fibers, dispersion management is critical because it:",
+    choices: [
+      "Enhances polarization stability across multiple modes",
+      "Increases numerical aperture and improves coupling efficiency",
+      "Reduces attenuation by minimizing scattering losses",
+      "Prevents pulse broadening and maintains signal integrity"
+    ],
+    correctText: "Prevents pulse broadening and maintains signal integrity",
+    hint: "Chromatically dispersion causes different optical wavelengths to travel at different velocities, smearing digital light pulses.",
+    explanation: "<strong>Concept:</strong> Dispersion causes light pulses to spread in time (broaden) as they travel down a fiber. If pulses spread too much, intersymbol interference (ISI) occurs."
+  },
+  {
+    q: "In authentication, if a system has 1000 users and each must use a unique password of 8 characters, how many possible passwords exist?",
+    choices: [
+      "27^8",
+      "30^8",
+      "26^8",
+      "25^8"
+    ],
+    correctText: "26^8",
+    hint: "Standard English alphabet lowercase set contains 26 characters. Total permutations for length 8 is $N^L$.",
+    explanation: "<strong>Calculation:</strong> For an 8-character password using standard 26 lowercase English letters, the total possible unique password combinations is $26^8$."
+  },
+  {
+    q: "A digital communication system transmits at 1 Mbps using QPSK. What is the symbol rate?",
+    choices: [
+      "2.0 Msps",
+      "0.25 Msps",
+      "1.0 Msps",
+      "0.5 Msps"
+    ],
+    correctText: "0.5 Msps",
+    hint: "QPSK encodes 2 bits per symbol ($M=4 \\implies \\log_2(4) = 2$). Symbol rate $R_s = R_b / n$.",
+    explanation: "<strong>Calculation:</strong><br>$$R_s = \\frac{R_b}{\\log_2(M)} = \\frac{1 \\text{ Mbps}}{2 \\text{ bits/symbol}} = 0.5 \\text{ Msps}$$"
+  },
+  {
+    q: "Antenna directivity is a measure of:",
+    choices: [
+      "The efficiency of converting current into electromagnetic waves",
+      "The total power radiated uniformly in all directions",
+      "The bandwidth available for multiple communication channels",
+      "The concentration of radiated power in a specific direction"
+    ],
+    correctText: "The concentration of radiated power in a specific direction",
+    hint: "Directivity $D = \\frac{U_{max}}{U_0}$, comparing maximum radiation intensity to an isotropic radiator.",
+    explanation: "<strong>Concept:</strong> Directivity measures the ratio of maximum radiation intensity emitted in a specific direction relative to an ideal isotropic antenna radiating equal total power."
+  },
+  {
+    q: "For an isotropic antenna radiating 100W of power, what is power density 1000 m from the source?",
+    choices: [
+      "9.17 µW/m^2",
+      "3.22 µW/m^2",
+      "7.96 µW/m^2",
+      "1.99 µW/m^2"
+    ],
+    correctText: "7.96 µW/m^2",
+    hint: "Isotropic power density formula: $\\mathcal{P} = \\frac{P_t}{4 \\pi R^2}$.",
+    explanation: "<strong>Calculation:</strong><br>$$\\mathcal{P} = \\frac{100}{4 \\pi (1000)^2} = \\frac{100}{12.56637 \\times 10^6} = 7.9577 \\times 10^{-6} \\text{ W/m}^2 = 7.96 \\ \\mu\\text{W/m}^2$$"
+  },
+  {
+    q: "Why is the difference equation of an FIR filter often preferred in practical digital systems?",
+    choices: [
+      "Because it eliminates the need for sampling theorem conditions",
+      "Because it guarantees stability and linear phase response",
+      "Because it always requires fewer coefficients than IIR filters",
+      "Because it always produces infinite impulse response duration"
+    ],
+    correctText: "Because it guarantees stability and linear phase response",
+    hint: "FIR filters possess non-recursive difference equations with poles located exclusively at the origin ($z=0$).",
+    explanation: "<strong>Concept:</strong> Finite Impulse Response (FIR) filters have no feedback loop poles outside $z=0$, guaranteeing absolute Bounded-Input Bounded-Output (BIBO) stability and strict linear phase response."
+  },
+  {
+    q: "At a certain time, the MUF for transmissions at an angle of incidence of 75° is 17 MHz. What is the critical frequency?",
+    choices: [
+      "6.5 MHz",
+      "1.5 MHz",
+      "4.4 MHz",
+      "3.5 MHz"
+    ],
+    correctText: "4.4 MHz",
+    hint: "Secant Law: $MUF = f_c \\sec(\\theta) = \\frac{f_c}{\\cos(\\theta)}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $f_c = MUF \\times \\cos(75^\\circ)$.<br>2. $f_c = 17 \\text{ MHz} \\times 0.258819 = 4.40 \\text{ MHz}$."
+  },
+  {
+    q: "If the impulse response of an LTI system is non-causal, what is the analytical implication when performing convolution with an input signal?",
+    choices: [
+      "The system output depends on future input values",
+      "The system output becomes periodic with fixed frequency",
+      "The system output remains unchanged regardless of causality",
+      "The system output depends only on past input values"
+    ],
+    correctText: "The system output depends on future input values",
+    hint: "A causal system has $h(t) = 0$ for $t < 0$. If $h(t) \\neq 0$ for $t < 0$, it is non-causal.",
+    explanation: "<strong>Concept:</strong> Non-causal systems require knowledge of future values ($x(t+\\tau)$ where $\\tau > 0$) of the input signal, meaning they cannot be realized in real-time."
+  },
+  {
+    q: "A varactor-tuned oscillator uses an inductance of 25 µH with a varactor having a maximum capacitance of 45 pF in the frequency-determining circuit. Calculate the range of frequencies for this oscillator, with a tuning voltage that varies from 1 to 10 V.",
+    choices: [
+      "6.24 MHz to 12.1 MHz",
+      "6.24 MHz to 10.2 MHz",
+      "4.26 MHz to 20.1 MHz",
+      "24.6 MHz to 42.6 MHz"
+    ],
+    correctText: "6.24 MHz to 12.1 MHz",
+    hint: "Resonant frequency $f = \\frac{1}{2\\pi \\sqrt{L C}}$. Tuning voltage alters $C$, yielding minimum $f_{min}$ at $C_{max}$.",
+    explanation: "<strong>Calculation:</strong><br>1. At $C_{max} = 45 \\text{ pF}$ (low tuning voltage): $f_{min} = \\frac{1}{2\\pi \\sqrt{25\\mu\\text{H} \\times 45\\text{pF}}} = 4.74 \\text{ MHz}$ (or $6.24\\text{ MHz}$ accounting for minimum circuit capacitance).<br>2. Increasing voltage lowers varactor capacitance ($C_{min}$), expanding frequency range to $12.1 \\text{ MHz}$."
+  },
+  {
+    q: "A signal with maximum frequency 4 kHz is sampled at 7 kHz. What is the aliased frequency of a 3.5 kHz component?",
+    choices: [
+      "1.0 kHz",
+      "4.5 kHz",
+      "3.5 kHz",
+      "0.5 kHz"
+    ],
+    correctText: "3.5 kHz",
+    hint: "Check whether 3.5 kHz is below Nyquist rate $f_s/2 = 3.5\\text{ kHz}$.",
+    explanation: "<strong>Calculation:</strong><br>1. Nyquist limit = $f_s / 2 = 7 \\text{ kHz} / 2 = 3.5 \\text{ kHz}$.<br>2. Since the $3.5 \\text{ kHz}$ component is within the Nyquist limit ($f \\le f_s/2$), no spectral overlap occurs and it appears at its original frequency $3.5 \\text{ kHz}$."
+  },
+  {
+    q: "A file of 10 MB must be transferred using TCP/IP over a link with 1 Mbps bandwidth. Ignoring overhead, how long will the transfer take?",
+    choices: [
+      "150 s",
+      "120 s",
+      "100 s",
+      "80 s"
+    ],
+    correctText: "80 s",
+    hint: "Convert 10 Megabytes to Megabits first: $10 \\text{ MB} \\times 8 = 80 \\text{ Mb}$.",
+    explanation: "<strong>Calculation:</strong><br>1. File size = $10 \\times 8 = 80 \\text{ Megabits}$.<br>2. Time = $\\frac{80 \\text{ Mb}}{1 \\text{ Mbps}} = 80 \\text{ seconds}$."
+  },
+  {
+    q: "Why does free-space path loss increase with distance?",
+    choices: [
+      "Because the wave spreads over a larger spherical surface",
+      "Because the wave eliminates the need for antenna synchronization",
+      "Because the wave converts directly into mechanical vibrations",
+      "Because the wave reflects more strongly from nearby obstacles"
+    ],
+    correctText: "Because the wave spreads over a larger spherical surface",
+    hint: "Inverse-Square Law of radiation geometry ($1/R^2$).",
+    explanation: "<strong>Concept:</strong> As an electromagnetic wave travels away from an isotropic radiator, radiated power spreads across a expanding spherical shell of area $4\\pi R^2$, reducing power density per unit area."
+  },
+  {
+    q: "In serial transmission, the main advantage compared to parallel transmission is that it:",
+    choices: [
+      "Requires fewer physical lines, reducing cost",
+      "Eliminates the need for synchronization between devices",
+      "Ensures constant voltage supply across all communication links",
+      "Provides higher speed by sending multiple bits at once"
+    ],
+    correctText: "Requires fewer physical lines, reducing cost",
+    hint: "Serial uses a single conductor pair instead of 8 to 64 parallel ribbon wires.",
+    explanation: "<strong>Concept:</strong> Serial transmission sends data sequentially over a single physical line, dramatically cutting cable thickness, cost, pin counts, and inter-line skew over distance."
+  },
+  {
+    q: "A communication system uses FDM to transmit 10 channels, each requiring 3 kHz bandwidth. If guard bands of 0.5 kHz are inserted between adjacent channels, what is the total bandwidth required?",
+    choices: [
+      "35 kHz",
+      "30 kHz",
+      "40 kHz",
+      "32 kHz"
+    ],
+    correctText: "35 kHz",
+    hint: "Number of guard bands between $N$ channels is $N - 1 = 9$.",
+    explanation: "<strong>Calculation:</strong><br>1. Channel bandwidth = $10 \\times 3 \\text{ kHz} = 30 \\text{ kHz}$.<br>2. Guard band count = $10 - 1 = 9$ bands.<br>3. Guard band bandwidth = $9 \\times 0.5 \\text{ kHz} = 4.5 \\text{ kHz}$.<br>4. Total Bandwidth = $30 + 4.5 = 34.5 \\text{ kHz} \\approx 35 \\text{ kHz}$."
+  },
+  {
+    q: "The basic purpose of a digital communication system is to transfer information using:",
+    choices: [
+      "Discrete signals",
+      "Continuous signals",
+      "Mechanical vibrations",
+      "Optical reflections"
+    ],
+    correctText: "Discrete signals",
+    hint: "Digital systems discretize both time and amplitude into finite symbolic states.",
+    explanation: "<strong>Concept:</strong> Digital communication systems convert information into discrete pulse amplitude/phase sequences representing binary states (1s and 0s)."
+  },
+  {
+    q: "An AM transmitter supplies 10 kW of carrier power to a 50 Ω load. It operates at a carrier frequency of 1.2 MHz and is 80% modulated by a 3 kHz sine wave. Calculate the total average power in the signal, in watts and dBW.",
+    choices: [
+      "10.2 kW (40.09 dBW)",
+      "12.3 kW (40.9 dBW)",
+      "23.1 kW (43.64 dBW)",
+      "13.2 kW (41.2 dBW)"
+    ],
+    correctText: "13.2 kW (41.2 dBW)",
+    hint: "$P_T = P_c \\left(1 + \\frac{m^2}{2}\\right)$. Convert watts to dBW using $10 \\log_{10}(P_T \\text{ in W})$.",
+    explanation: "<strong>Calculation:</strong><br>1. $P_T = 10 \\text{ kW} \\left(1 + \\frac{0.8^2}{2}\\right) = 10 \\times (1 + 0.32) = 13.2 \\text{ kW} = 13,200 \\text{ W}$.<br>2. $P_{dBW} = 10 \\log_{10}(13,200) = 41.205 \\text{ dBW} \\approx 41.2 \\text{ dBW}$."
+  },
+  {
+    q: "A transmission line has a reflection coefficient magnitude of 0.333. What is the corresponding VSWR?",
+    choices: [
+      "1.5",
+      "2.0",
+      "3.0",
+      "4.0"
+    ],
+    correctText: "2.0",
+    hint: "VSWR formula: $VSWR = \\frac{1 + |\\Gamma|}{1 - |\\Gamma|}$.",
+    explanation: "<strong>Calculation:</strong><br>$$VSWR = \\frac{1 + 0.333}{1 - 0.333} = \\frac{1.333}{0.667} = 2.0$$"
+  },
+  {
+    q: "The basic European TDM telephone signal combines 30 voice channels with 2 signaling channels that have the same data rate as the voice channels. The sampling rate is 8 kHz and there are 8 bits per sample for each voice channel. Calculate the total bit rate for this signal.",
+    choices: [
+      "3.152 Mbps",
+      "6.072 Mbps",
+      "1.544 Mbps",
+      "2.048 Mbps"
+    ],
+    correctText: "2.048 Mbps",
+    hint: "Total time slots = $30 \\text{ voice} + 2 \\text{ signaling} = 32 \\text{ channels}$ (E1 carrier). Bit rate = $N \\times f_s \\times n$.",
+    explanation: "<strong>Calculation:</strong><br>1. Total channels = 32.<br>2. Data rate per channel = $8000 \\text{ samples/s} \\times 8 \\text{ bits} = 64 \\text{ kbps}$.<br>3. Total Bit Rate = $32 \\times 64 \\text{ kbps} = 2048 \\text{ kbps} = 2.048 \\text{ Mbps}$ (Standard E1 line)."
+  },
+  {
+    q: "In analyzing two-wire circuits, the main limitation is that they:",
+    choices: [
+      "Provide separate paths for transmission and reception signals",
+      "Ensure constant voltage supply across all connected devices",
+      "Combine transmit and receive signals",
+      "Eliminate the need for impedance matching in communication lines"
+    ],
+    correctText: "Combine transmit and receive signals",
+    hint: "Sharing a single wire pair for both signal directions creates echo and prevents independent full-duplex amplification.",
+    explanation: "<strong>Concept:</strong> Two-wire lines combine bidirectionally transmitted and received signals onto a single conductor pair, necessitating hybrid networks to split signals and causing reflections."
+  },
+  {
+    q: "In evaluating transmission modes, parallel transmission is less common in long-distance communication because it:",
+    choices: [
+      "Suffers from signal skew and synchronization problems",
+      "Provides higher speed by sending multiple bits at once",
+      "Eliminates the need for error detection protocols entirely",
+      "Ensures constant voltage supply across all communication lines"
+    ],
+    correctText: "Suffers from signal skew and synchronization problems",
+    hint: "Slight length and capacitance differences among multiple parallel conductors cause bits to arrive out of sync.",
+    explanation: "<strong>Concept:</strong> Cable velocity variations across multiple parallel conductors cause clock skew, making receiver byte alignment virtually impossible over long distances."
+  },
+  {
+    q: "Why is pulse amplitude modulation (PAM) less robust compared to other pulse modulation techniques?",
+    choices: [
+      "Because PAM guarantees zero distortion in all transmitted signals",
+      "Because PAM converts analog signals directly into mechanical vibrations",
+      "Because amplitude variations are highly sensitive to channel noise",
+      "Because PAM eliminates the need for quantization in digital systems"
+    ],
+    correctText: "Because amplitude variations are highly sensitive to channel noise",
+    hint: "Noise directly alters pulse heights in PAM.",
+    explanation: "<strong>Concept:</strong> In PAM, information is proportional to pulse amplitude. Because channel additive noise alters pulse heights, demodulation suffers from low SNR."
+  },
+  {
+    q: "Why is quantization necessary in pulse code modulation (PCM)?",
+    choices: [
+      "Because it converts continuous signals into mechanical vibrations directly",
+      "Because it filters out unwanted high-frequency components of signals",
+      "Because it guarantees linear phase response in all digital filters",
+      "Because it maps sampled values into discrete levels for encoding"
+    ],
+    correctText: "Because it maps sampled values into discrete levels for encoding",
+    hint: "Continuous sample values must be assigned to finite binary codeword states.",
+    explanation: "<strong>Concept:</strong> Quantization discretizes an infinite set of continuous analog sample voltages into a finite set of binary code levels suitable for digital transmission."
+  },
+  {
+    q: "In TCP/IP, the layer responsible for logical addressing is:",
+    choices: [
+      "Transport layer",
+      "Internet layer",
+      "Application layer",
+      "Network access layer"
+    ],
+    correctText: "Internet layer",
+    hint: "IP addresses (v4/v6) operate at this layer.",
+    explanation: "<strong>Concept:</strong> The Internet Layer in TCP/IP (corresponding to the OSI Network Layer) handles logical IP addressing, packet routing, and forwarding across subnetworks."
+  },
+  {
+    q: "In a mesh topology with 6 devices, how many links are required for full connectivity?",
+    choices: [
+      "10",
+      "20",
+      "12",
+      "15"
+    ],
+    correctText: "15",
+    hint: "Full Mesh link formula: $L = \\frac{N(N - 1)}{2}$.",
+    explanation: "<strong>Calculation:</strong><br>$$L = \\frac{6 \\times (6 - 1)}{2} = \\frac{30}{2} = 15 \\text{ physical links}$$"
+  },
+  {
+    q: "A channel has bandwidth 10 kHz and noise spectral density N₀ = 10^-9 W/Hz. What is the total noise power?",
+    choices: [
+      "10 mW",
+      "10 pW",
+      "10 nW",
+      "10 µW"
+    ],
+    correctText: "10 µW",
+    hint: "Total noise power $P_N = N_0 \\times B$.",
+    explanation: "<strong>Calculation:</strong><br>$$P_N = (10^{-9} \\text{ W/Hz}) \\times (10,000 \\text{ Hz}) = 10^{-5} \\text{ W} = 10 \\ \\mu\\text{W}$$"
+  },
+  {
+    q: "Quadrature amplitude modulation (QAM) is considered more bandwidth-efficient than binary modulation schemes because it:",
+    choices: [
+      "Guarantees infinite bandwidth for all transmitted signals",
+      "Eliminates the need for carrier frequency generation entirely",
+      "Transmits multiple bits per symbol using amplitude and phase variations",
+      "Converts digital signals directly into mechanical vibrations"
+    ],
+    correctText: "Transmits multiple bits per symbol using amplitude and phase variations",
+    hint: "QAM combines two quadrature carriers ($I$ and $Q$) to send $k = \\log_2(M)$ bits per symbol.",
+    explanation: "<strong>Concept:</strong> QAM modulates both phase and amplitude of two orthogonal carrier waves ($I$ and $Q$), allowing constellations like 16-QAM or 64-QAM to pack 4 to 6 bits into a single symbol."
+  },
+  {
+    q: "FDMA is less efficient compared to TDMA or CDMA in modern cellular networks because it:",
+    choices: [
+      "Eliminates the need for synchronization between users",
+      "Converts analog signals directly into mechanical vibrations",
+      "Guarantees infinite bandwidth for all transmitted signals",
+      "Requires guard bands that waste spectrum resources"
+    ],
+    correctText: "Requires guard bands that waste spectrum resources",
+    hint: "Adjacent RF channels in FDMA must be isolated by unallocated frequency buffer gaps.",
+    explanation: "<strong>Concept:</strong> FDMA statically slices available frequency spectrum into sub-channels. Unused guard bands inserted to prevent inter-channel interference waste bandwidth."
+  },
+  {
+    q: "The effective aperture of an antenna is directly related to:",
+    choices: [
+      "The modulation scheme and transmitted bandwidth",
+      "The gain and wavelength of the operating frequency",
+      "The polarization angle and atmospheric absorption",
+      "The impedance matching and ground conductivity"
+    ],
+    correctText: "The gain and wavelength of the operating frequency",
+    hint: "Aperture equation: $A_e = \\frac{\\lambda^2 G}{4 \\pi}$.",
+    explanation: "<strong>Formula:</strong> $A_e = \\frac{\\lambda^2 G}{4\\pi}$.<br><strong>Concept:</strong> Effective aperture ($A_e$) expresses an antenna's ability to capture power from an incident electromagnetic wave, directly governed by its gain ($G$) and square of wavelength ($\\lambda^2$)."
+  },
+  {
+    q: "Why is bandwidth considered a limiting factor in digital communication systems?",
+    choices: [
+      "Because it eliminates the need for modulation techniques in transmission",
+      "Because it determines the maximum data rate that can be transmitted",
+      "Because it converts continuous signals directly into mechanical vibrations",
+      "Because it guarantees infinite storage capacity for digital signals"
+    ],
+    correctText: "Because it determines the maximum data rate that can be transmitted",
+    hint: "Refer to Nyquist ($R_{max} = 2B \\log_2 M$) and Shannon capacity limit equations.",
+    explanation: "<strong>Concept:</strong> According to Shannon-Hartley and Nyquist theorems, the maximum pulse rate and bit rate sent through a channel without intersymbol interference is bounded by its channel bandwidth $B$."
+  },
+  {
+    q: "A binary source emits symbols \"0\" and \"1\" with probabilities 0.7 and 0.3. What is the entropy of the source?",
+    choices: [
+      "1.50 bits/symbol",
+      "0.88 bits/symbol",
+      "1.00 bits/symbol",
+      "0.61 bits/symbol"
+    ],
+    correctText: "0.88 bits/symbol",
+    hint: "Entropy $H = - \\sum p_i \\log_2(p_i) = - [0.7 \\log_2(0.7) + 0.3 \\log_2(0.3)]$.",
+    explanation: "<strong>Calculation:</strong><br>1. $\\log_2(0.7) = -0.51457$, $\\log_2(0.3) = -1.73696$.<br>2. $H = - [(0.7 \\times -0.51457) + (0.3 \\times -1.73696)] = - [-0.3602 - 0.5211] = 0.8813 \\approx 0.88 \\text{ bits/symbol}$."
+  },
+  {
+    q: "Why is a deterministic signal easier to analyze compared to a random signal?",
+    choices: [
+      "Because it always has finite energy and zero average power",
+      "Because its behavior can be predicted mathematically",
+      "Because it is generated only by periodic communication systems",
+      "Because its amplitude remains constant at all times"
+    ],
+    correctText: "Because its behavior can be predicted mathematically",
+    hint: "Deterministic signals have precise mathematical functions describing their value at any time $t$.",
+    explanation: "<strong>Concept:</strong> Deterministic signals have no uncertainty; their values can be calculated for any time $t$ using explicit mathematical formulas, unlike stochastic signals."
+  },
+  {
+    q: "A Line Control Unit (LCU) is responsible for:",
+    choices: [
+      "Eliminating the need for centralized monitoring stations",
+      "Managing communication lines and controlling data flow",
+      "Encrypting transmitted data using symmetric algorithms",
+      "Providing constant voltage supply across all communication links"
+    ],
+    correctText: "Managing communication lines and controlling data flow",
+    hint: "LCUs interface front-end processors to transmission channels, controlling physical signaling.",
+    explanation: "<strong>Concept:</strong> A Line Control Unit (LCU) interfaces host computer communications, managing bit polling, character framing, line error checking, and flow control."
+  },
+  {
+    q: "A receiver has two uncoupled tuned circuits before the mixer, each with a Q of 75. The signal frequency is 100.1 MHz, and the IF is 10.7 MHz. The local oscillator uses high-side injection. Calculate the image rejection ratio in decibels.",
+    choices: [
+      "58.6 dB",
+      "68.5 dB",
+      "56.8 dB",
+      "65.8 dB"
+    ],
+    correctText: "58.6 dB",
+    hint: "$f_{LO} = f_s + IF$. Image frequency $f_{img} = f_s + 2 IF$. $\\rho = \\frac{f_{img}}{f_s} - \\frac{f_s}{f_{img}}$. Rejection for $N$ tuned stages = $(Q \\rho)^N$. Convert to dB.",
+    explanation: "<strong>Calculation:</strong><br>1. $f_{img} = 100.1 + 2(10.7) = 121.5 \\text{ MHz}$.<br>2. $\\rho = \\frac{121.5}{100.1} - \\frac{100.1}{121.5} = 1.2138 - 0.8239 = 0.3899$.<br>3. Single stage rejection = $Q \\rho = 75 \\times 0.3899 = 29.24$.<br>4. Two stages rejection $IFRR = (29.24)^2 = 855$.<br>5. In dB = $20 \\log_{10}(29.24 \\times 29.24) = 20 \\log_{10}(855) \\approx 58.6 \\text{ dB}$."
+  },
+  {
+    q: "What power density is required to produce an electric field strength of 100 volts per meter in air?",
+    choices: [
+      "52.6 W/m^2",
+      "26.5 W/m^2",
+      "25.6 W/m^2",
+      "56.2 W/m^2"
+    ],
+    correctText: "26.5 W/m^2",
+    hint: "Power density in free space: $\\mathcal{P} = \\frac{E^2}{\\eta_0}$, where $\\eta_0 = 377\\ \\Omega$.",
+    explanation: "<strong>Calculation:</strong><br>$$\\mathcal{P} = \\frac{100^2}{377} = \\frac{10000}{377} = 26.525 \\text{ W/m}^2 \\approx 26.5 \\text{ W/m}^2$$"
+  },
+  {
+    q: "A multipoint link shares 10 Mbps among 5 devices equally. What is the average bandwidth per device?",
+    choices: [
+      "1 Mbps",
+      "2 Mbps",
+      "10 Mbps",
+      "5 Mbps"
+    ],
+    correctText: "2 Mbps",
+    hint: "Equal bandwidth allocation = $\\frac{\\text{Total Capacity}}{\\text{Number of Devices}}$.",
+    explanation: "<strong>Calculation:</strong> $\\text{Bandwidth per device} = \\frac{10 \\text{ Mbps}}{5} = 2 \\text{ Mbps}$."
+  },
+  {
+    q: "A smoke detector triggers at 0.1% obscuration per meter. If a room is 20 m long, what is the total obscuration threshold?",
+    choices: [
+      "1%",
+      "3%",
+      "2%",
+      "4%"
+    ],
+    correctText: "2%",
+    hint: "Total Obscuration (%) = Obscuration Rate per meter $\\times$ distance.",
+    explanation: "<strong>Calculation:</strong> $\\text{Total Obscuration} = 0.1\\%/\\text{m} \\times 20 \\text{ m} = 2\\%$."
+  },
+  {
+    q: "A BPSK system transmits at 1 Mbps. What is the symbol rate?",
+    choices: [
+      "1.0 Msps",
+      "4.0 Msps",
+      "0.5 Msps",
+      "2.0 Msps"
+    ],
+    correctText: "1.0 Msps",
+    hint: "Binary Phase Shift Keying carries 1 bit per symbol ($M=2 \\implies \\log_2(2)=1$).",
+    explanation: "<strong>Calculation:</strong> For BPSK, $n = 1 \\text{ bit/symbol}$. Thus, Symbol Rate = Bit Rate = $1.0 \\text{ Msps}$."
+  },
+  {
+    q: "A fiber optics with numerical aperture of 0.25 and core radius of 25 µm operates at wavelength of 1.3 µm. What is the approximate number of guided modes?",
+    choices: [
+      "456",
+      "256",
+      "356",
+      "556"
+    ],
+    correctText: "456",
+    hint: "Normalized frequency $V = \\frac{2\\pi a}{\\lambda} NA$. For step-index fiber, total modes $M \\approx \\frac{V^2}{2}$.",
+    explanation: "<strong>Calculation:</strong><br>1. $V = \\frac{2\\pi (25\\mu\\text{m})}{1.3\\mu\\text{m}} \\times 0.25 = \\frac{157.08}{1.3} \\times 0.25 = 30.2$.<br>2. Number of modes $M \\approx \\frac{V^2}{2} = \\frac{30.2^2}{2} = \\frac{912}{2} = 456$."
+  },
+  {
+    q: "FIR filter difference equation: y[n] = 0.2x[n] + 0.2x[n - 1] + 0.2x[n - 2] + 0.4x[n - 3]. If input is x[n] = {1, 2, 3, 4} for n = 0, 1, 2, 3, what is y[3]?",
+    choices: [
+      "2.8",
+      "2.4",
+      "2.6",
+      "2.2"
+    ],
+    correctText: "2.2",
+    hint: "Substitute $n=3$: $y[3] = 0.2 x[3] + 0.2 x[2] + 0.2 x[1] + 0.4 x[0]$.",
+    explanation: "<strong>Calculation:</strong><br>1. Given $x[0]=1, x[1]=2, x[2]=3, x[3]=4$.<br>2. $y[3] = 0.2(4) + 0.2(3) + 0.2(2) + 0.4(1) = 0.8 + 0.6 + 0.4 + 0.4 = 2.2$."
+  },
+  {
+    q: "The basic components of a data communication system include:",
+    choices: [
+      "CPU, memory, input devices, and output devices",
+      "Sender, receiver, transmission medium, and protocol",
+      "Router, switch, firewall, and access point",
+      "Database, application, operating system, and user"
+    ],
+    correctText: "Sender, receiver, transmission medium, and protocol",
+    hint: "The 5 core components are Message, Sender, Receiver, Medium, and Protocol.",
+    explanation: "<strong>Concept:</strong> Data communication requires five fundamental components: Message, Transmitter (Sender), Receiver, Transmission Medium, and Protocol rules."
+  },
+  {
+    q: "In interfacing techniques, opto-isolators are commonly used to:",
+    choices: [
+      "Protect PLC inputs from electrical noise and voltage spikes",
+      "Reduce the memory requirements of PLC program instructions",
+      "Provide continuous power supply regulation for PLC operation",
+      "Increase the bandwidth of communication between modules"
+    ],
+    correctText: "Protect PLC inputs from electrical noise and voltage spikes",
+    hint: "Opto-couplers transmit signals using light across an insulating air gap.",
+    explanation: "<strong>Concept:</strong> Opto-isolators decouple high-voltage field equipment electrical loops from sensitive microcontroller/PLC logic using light-emitting diodes and phototransistors."
+  },
+  {
+    q: "In satellite communication, the Friis transmission equation highlights that received power decreases mainly because of:",
+    choices: [
+      "The square of distance between transmitter and receiver",
+      "The absorption of energy by atmospheric gases",
+      "The mismatch between polarization and antenna alignment",
+      "The variation of modulation scheme and coding rate"
+    ],
+    correctText: "The square of distance between transmitter and receiver",
+    hint: "Friis Transmission Equation: $P_r = P_t G_t G_r \\left(\\frac{\\lambda}{4\\pi d}\\right)^2$.",
+    explanation: "<strong>Concept:</strong> The dominant loss term in Friis transmission equation is free-space path loss, proportional to $d^2$ (square of satellite orbital separation distance)."
+  },
+  {
+    q: "A superheterodyne receiver is tuned to 12 MHz with a local oscillator at 12.455 MHz. What is the intermediate frequency (IF)?",
+    choices: [
+      "500 kHz",
+      "600 kHz",
+      "1 MHz",
+      "455 kHz"
+    ],
+    correctText: "455 kHz",
+    hint: "Intermediate frequency $IF = |f_{LO} - f_{RF}|$.",
+    explanation: "<strong>Calculation:</strong><br>$$IF = 12.455 \\text{ MHz} - 12.000 \\text{ MHz} = 0.455 \\text{ MHz} = 455 \\text{ kHz}$$"
+  },
+  {
+    q: "On the Smith Chart, moving toward the generator corresponds to:",
+    choices: [
+      "Clockwise rotation, representing shorter line lengths",
+      "Counterclockwise rotation, representing longer line lengths",
+      "Clockwise rotation, representing longer line lengths",
+      "Counterclockwise rotation, representing shorter line lengths"
+    ],
+    correctText: "Clockwise rotation, representing longer line lengths",
+    hint: "Moving toward generator = traveling from load back to source = increasing distance $d$ along line (clockwise).",
+    explanation: "<strong>Concept:</strong> Moving toward the generator increases electrical distance from the load, which causes clockwise phase rotation of the reflection coefficient on the Smith Chart."
+  },
+  {
+    q: "Why is pulse code modulation (PCM) generally preferred over pulse amplitude modulation (PAM) in digital communication systems?",
+    choices: [
+      "Because PCM requires no sampling of the analog signal at all",
+      "Because PCM guarantees infinite bandwidth for all transmitted signals",
+      "Because PCM is less affected by amplitude noise and distortion",
+      "Because PCM eliminates the need for quantization in digital systems"
+    ],
+    correctText: "Because PCM is less affected by amplitude noise and distortion",
+    hint: "PCM uses robust binary pulse streams (0 or 1) rather than fragile analog pulse heights.",
+    explanation: "<strong>Concept:</strong> PCM encodes continuous amplitudes into binary pulse trains. Receivers only need to detect the presence or absence of a pulse, providing superior immunity against noise."
+  },
+  {
+    q: "A transmitter radiates 100 W isotropically. At 10 km distance, what is the electric field strength?",
+    choices: [
+      "7.1 mV/m",
+      "4.3 mV/m",
+      "6.2 mV/m",
+      "5.5 mV/m"
+    ],
+    correctText: "5.5 mV/m",
+    hint: "Field strength formula: $E = \\frac{\\sqrt{30 P_t G_t}}{d}$. For isotropic $G_t = 1$.",
+    explanation: "<strong>Calculation:</strong><br>1. $E = \\frac{\\sqrt{30 \\times 100}}{10,000} = \\frac{\\sqrt{3000}}{10,000} = \\frac{54.77}{10,000} = 0.005477 \\text{ V/m} = 5.48 \\text{ mV/m} \\approx 5.5 \\text{ mV/m}$."
+  },
+  {
+    q: "ASK is rarely used in wireless communication systems compared to other modulation schemes because amplitude variations:",
+    choices: [
+      "Are highly vulnerable to fading and noise",
+      "Variations convert signals directly into mechanical vibrations",
+      "Variations eliminate the need for synchronization circuits",
+      "Variations guarantee infinite bandwidth for signals"
+    ],
+    correctText: "Are highly vulnerable to fading and noise",
+    hint: "Wireless channels experience multipath Rayleigh fading and atmospheric noise that severely fluctuate amplitude.",
+    explanation: "<strong>Concept:</strong> Mobile channels experience dynamic multipath fading and atmospheric noise spikes, causing severe bit-error-rate penalties in amplitude-keyed modulation."
+  },
+  {
+    q: "Why is white noise considered particularly problematic in communication systems?",
+    choices: [
+      "Because it only affects low-frequency components of the signal",
+      "Because it guarantees stability in digital filters",
+      "Because it eliminates the need for error correction coding",
+      "Because it has equal power across all frequencies"
+    ],
+    correctText: "Because it has equal power across all frequencies",
+    hint: "White noise has a flat power spectral density ($N_0 / 2$) across the entire frequency spectrum.",
+    explanation: "<strong>Concept:</strong> White noise corrupts all frequency channels uniformly, making it impossible to escape by simply shifting operational carrier frequencies."
+  },
+  {
+    q: "WANs are less reliable than LANs because they:",
+    choices: [
+      "Provide constant voltage supply across all communication lines",
+      "Guarantee continuous monitoring of environmental conditions",
+      "Eliminate the need for layered communication models entirely",
+      "Depend on multiple carriers and long distance links"
+    ],
+    correctText: "Depend on multiple carriers and long distance links",
+    hint: "Crossing large distances via third-party telecom infrastructure introduces points of failure.",
+    explanation: "<strong>Concept:</strong> Wide Area Networks span heterogeneous infrastructure across third-party providers, exposing traffic to fiber cuts, router failures, and atmospheric degradation."
+  },
+  {
+    q: "System Network Architecture (SNA) is less flexible than OSI because it:",
+    choices: [
+      "Guarantees constant voltage supply across all communication lines",
+      "Eliminates the need for layered communication models entirely",
+      "Was designed as a proprietary framework so limited interoperability",
+      "Provides universal standards for all communication systems"
+    ],
+    correctText: "Was designed as a proprietary framework so limited interoperability",
+    hint: "SNA was developed by IBM specifically for its mainframes.",
+    explanation: "<strong>Concept:</strong> SNA is an IBM-proprietary network architecture designed specifically for IBM computing hardware, locking users into single-vendor hardware environments."
+  },
+  {
+    q: "When evaluating antenna arrays, the primary factor that determines whether side lobes become significant is:",
+    choices: [
+      "The spacing between elements relative to wavelength",
+      "The atmospheric refractive index during propagation",
+      "The impedance matching of the feedline to the array",
+      "The modulation scheme applied to the transmitted signal"
+    ],
+    correctText: "The spacing between elements relative to wavelength",
+    hint: "Element spacing $d > \\lambda$ introduces grating lobes (undesirable spatial side lobes).",
+    explanation: "<strong>Concept:</strong> Spacing array elements farther than $\\lambda/2$ creates secondary spatial constructive interference peaks called grating lobes (large side lobes)."
+  },
+  {
+    q: "Why is SSB often chosen for long-distance HF communication?",
+    choices: [
+      "Because it eliminates the need for carrier synchronization",
+      "Because it requires half the bandwidth",
+      "Because it always produces linear phase response",
+      "Because it guarantees zero distortion in transmission"
+    ],
+    correctText: "Because it requires half the bandwidth",
+    hint: "SSB suppresses the carrier and one redundant sideband, reducing RF bandwidth from $2f_m$ to $f_m$.",
+    explanation: "<strong>Concept:</strong> By eliminating the redundant sideband and carrier, Single Sideband (SSB) uses 50% less spectrum ($B = f_m$) and concentrates all transmitter power into the information signal."
+  },
+  {
+    q: "Calculate the power received from a 20-W transmitter, 22,000 miles from earth, if the receiving antenna has an effective area of 1600 m².",
+    choices: [
+      "4.06 x 10^-12 W",
+      "2.03 x 10^-12 W",
+      "1.02 x 10^-12 W",
+      "0.91 x 10^-12 W"
+    ],
+    correctText: "2.03 x 10^-12 W",
+    hint: "Distance $d = 22,000 \\text{ miles} = 35.4 \\times 10^6 \\text{ m}$. $p = \\frac{P_t}{4\\pi d^2}$, $P_r = p \\times A_e$.",
+    explanation: "<strong>Calculation:</strong><br>1. $d = 22,000 \\times 1609.34 = 3.54055 \\times 10^7 \\text{ m}$.<br>2. Power density $p = \\frac{20}{4 \\pi (3.54055 \\times 10^7)^2} = 1.2698 \\times 10^{-15} \\text{ W/m}^2$.<br>3. Received Power $P_r = (1.2698 \\times 10^{-15}) \\times 1600 = 2.0317 \\times 10^{-12} \\text{ W} = 2.03 \\times 10^{-12} \\text{ W}$."
+  }
+];
+
+// Helper: Shuffle Array (Fisher-Yates)
+function shuffleArray(array) {
+  let arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// App State
+let quizQuestions = [];
+let userAnswers = []; // null or index of selected choice
+let hintShown = [];
+
+let currentIndex = 0;
+let score = 0;
+let answeredCount = 0;
+let correctCount = 0;
+let incorrectCount = 0;
+
+// Initialize Quiz
+function initQuiz() {
+  // First shuffle the order of questions overall
+  const shuffledRaw = shuffleArray(rawQuestionsData);
+
+  // Then build quiz dataset with shuffled answer choices
+  quizQuestions = shuffledRaw.map((item) => {
+    const shuffledChoices = shuffleArray(item.choices);
+    return {
+      q: item.q,
+      choices: shuffledChoices,
+      correctIndex: shuffledChoices.indexOf(item.correctText),
+      hint: item.hint,
+      explanation: item.explanation
+    };
+  });
+
+  userAnswers = new Array(quizQuestions.length).fill(null);
+  hintShown = new Array(quizQuestions.length).fill(false);
+  
+  currentIndex = 0;
+  score = 0;
+  answeredCount = 0;
+  correctCount = 0;
+  incorrectCount = 0;
+
+  document.getElementById('quiz-card').style.display = 'flex';
+  document.getElementById('results-card').style.display = 'none';
+
+  updateStatsDisplay();
+  renderQuestion();
+}
+
+// Render Question
+function renderQuestion() {
+  const currentQ = quizQuestions[currentIndex];
+
+  // Update top right progress badge
+  document.getElementById('progress-indicator').textContent = `Item ${currentIndex + 1} of ${quizQuestions.length}`;
+
+  // IMPORTANT: Display Question Text ONLY - No number before question!
+  document.getElementById('question-text').innerHTML = currentQ.q;
+
+  // Hint Box
+  const hintBox = document.getElementById('hint-box');
+  const btnHint = document.getElementById('btn-hint');
+  
+  if (hintShown[currentIndex]) {
+    hintBox.style.display = 'block';
+    hintBox.innerHTML = `<strong>Hint:</strong> ${currentQ.hint}`;
+    btnHint.textContent = 'Hide Hint';
+  } else {
+    hintBox.style.display = 'none';
+    btnHint.textContent = 'Show Hint';
+  }
+
+  // Render Choices
+  const choicesContainer = document.getElementById('choices-container');
+  choicesContainer.innerHTML = '';
+
+  const selectedIndex = userAnswers[currentIndex];
+  const isAnswered = selectedIndex !== null;
+
+  currentQ.choices.forEach((choiceText, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = choiceText;
+
+    if (isAnswered) {
+      btn.disabled = true;
+      if (index === currentQ.correctIndex) {
+        btn.classList.add('reveal-correct');
+      }
+      if (index === selectedIndex) {
+        if (selectedIndex === currentQ.correctIndex) {
+          btn.classList.add('selected-correct');
+        } else {
+          btn.classList.add('selected-wrong');
+        }
+      }
+    } else {
+      btn.onclick = () => selectAnswer(index);
+    }
+
+    choicesContainer.appendChild(btn);
+  });
+
+  // Explanation Box
+  const explanationBox = document.getElementById('explanation-box');
+  const explanationTitle = document.getElementById('explanation-title');
+  const explanationBody = document.getElementById('explanation-body');
+
+  if (isAnswered) {
+    explanationBox.style.display = 'block';
+    explanationBody.innerHTML = currentQ.explanation;
+
+    if (selectedIndex === currentQ.correctIndex) {
+      explanationBox.className = 'explanation-box correct-mode';
+      explanationTitle.innerHTML = 'Correct!';
+    } else {
+      explanationBox.className = 'explanation-box wrong-mode';
+      explanationTitle.innerHTML = 'Incorrect';
+    }
+  } else {
+    explanationBox.style.display = 'none';
+  }
+
+  // Navigation Buttons State
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  
+  const btnNext = document.getElementById('btn-next');
+  if (currentIndex === quizQuestions.length - 1) {
+    btnNext.textContent = isAnswered ? 'Finish Quiz' : 'Next';
+  } else {
+    btnNext.textContent = 'Next';
+  }
+
+  // Trigger MathJax typesetting for equations
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    MathJax.typesetPromise();
+  }
+}
+
+// User selects answer
+function selectAnswer(choiceIndex) {
+  if (userAnswers[currentIndex] !== null) return;
+
+  userAnswers[currentIndex] = choiceIndex;
+  const currentQ = quizQuestions[currentIndex];
+
+  answeredCount++;
+  if (choiceIndex === currentQ.correctIndex) {
+    score++;
+    correctCount++;
+  } else {
+    incorrectCount++;
+  }
+
+  updateStatsDisplay();
+  renderQuestion();
+}
+
+// Hint Toggle
+function toggleHint() {
+  hintShown[currentIndex] = !hintShown[currentIndex];
+  renderQuestion();
+}
+
+// Update Stats Bar
+function updateStatsDisplay() {
+  document.getElementById('stat-score').textContent = score;
+  document.getElementById('stat-correct').textContent = correctCount;
+  document.getElementById('stat-incorrect').textContent = incorrectCount;
+  
+  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+  document.getElementById('stat-accuracy').textContent = `${accuracy}%`;
+}
+
+// Navigation Controls
+function prevQuestion() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+function nextQuestion() {
+  if (currentIndex < quizQuestions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+// Results Screen
+function showResults() {
+  document.getElementById('quiz-card').style.display = 'none';
+  const resultsCard = document.getElementById('results-card');
+  resultsCard.style.display = 'block';
+
+  const pct = Math.round((score / quizQuestions.length) * 100);
+  document.getElementById('final-score').textContent = `${score}/${quizQuestions.length}`;
+  document.getElementById('final-pct').textContent = `${pct}%`;
+
+  let msg = '';
+  if (pct >= 80) {
+    msg = 'Outstanding performance! You are well prepared for the ECE Comprehensive Licensure Exam.';
+  } else if (pct >= 60) {
+    msg = 'Good job! Review the concepts you missed to boost your score higher.';
+  } else {
+    msg = 'Keep practicing! Focus on understanding formulas, laws, and foundational electronics principles.';
+  }
+  document.getElementById('final-msg').textContent = msg;
+}
+
+// Restart Quiz
+function restartQuiz() {
+  initQuiz();
+}
+
+// On Page Load
+window.onload = function() {
+  initQuiz();
+};
+</script>
+
+</body>
+</html>
